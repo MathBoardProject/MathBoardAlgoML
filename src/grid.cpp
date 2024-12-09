@@ -1,5 +1,5 @@
 // local
-#include "Grid.hpp"
+#include "grid.hpp"
 #include "common.hpp"
 
 // std
@@ -15,7 +15,7 @@ Grid::Grid(const cv::Point2f &top_left_corner,
   if (m_CellSize <= 0) {
     std::ofstream debug_stream("debug_output.txt",
                                std::ios::app); // Debug output stream
-    debug_stream << "error: Grid.cpp: line 18: m_Cell_Size is " << m_CellSize << "instead of positive number\n";
+    debug_stream << "error: grid.cpp: line 18: m_Cell_Size is " << m_CellSize << "instead of positive number\n";
     debug_stream.close();
   }
   m_Grid.resize(m_Height);

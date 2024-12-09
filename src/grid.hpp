@@ -1,7 +1,7 @@
 #pragma once
 
 // local
-#include "Grid.hpp"
+#include "grid.hpp"
 
 // opencv
 #include <opencv2/opencv.hpp>
