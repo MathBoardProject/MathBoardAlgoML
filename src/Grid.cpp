@@ -15,7 +15,7 @@ Grid::Grid(const cv::Point2f &top_left_corner,
   if (m_CellSize <= 0) {
     std::ofstream debug_stream("debug_output.txt",
                                std::ios::app); // Debug output stream
-    debug_stream << "Cell size have to be positive number\n";
+    debug_stream << "error: Grid.cpp: line 18: m_Cell_Size is " << m_CellSize << "instead of positive number\n";
     debug_stream.close();
   }
   m_Grid.resize(m_Height);
@@ -49,12 +49,12 @@ void Grid::InsertObjects(std::vector<LineInfo> &lines) {
         std::floor((object_max.y - m_TopLeftCorner.y)) / m_CellSize);
     body_max_y = std::clamp(body_max_y, 0, static_cast<int>(m_Height - 1));
 
-    for (int y = body_min_y; y <= body_max_y; y++) {
+    for (std::ptrdiff_t y = body_min_y; y <= body_max_y; y++) {
       auto &row = m_Grid[y];
       if (row.empty()) {
         row.resize(m_Width);
       }
-      for (int x = body_min_x; x <= body_max_x; x++) {
+      for (std::ptrdiff_t x = body_min_x; x <= body_max_x; x++) {
         row[x].push_back(lines[i].idx);
       }
     }
@@ -99,5 +99,7 @@ bool Grid::HasBeenChecked(std::unordered_multimap<int, int> &checked_pairs,
     if (i->second == pair.second) {
       return true;
     }
+  } 
 }
+
 } // namespace mathboard
