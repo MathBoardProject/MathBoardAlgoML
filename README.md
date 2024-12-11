@@ -7,6 +7,7 @@ Tested on Linux and Windows, but MacOS, and really any other OS with CMake, FFmp
     * Install CMake, Git, FFmpeg, VTK and OpenCV (different commands based on your distribution)
         * Fedora: `sudo dnf install cmake git ffmpeg vtk opencv opencv-devel`
         * Arch: `sudo pacman -S --needed cmake git ffmpeg vtk opencv`
+        * Ubuntu: `sudo apt install cmake git ffmpeg libopencv-dev` 
     * `git clone https://github.com/MathBoardProject/MathBoardAlgoML`
     * `cd MathBoardAlgoML`
     * `mkdir build`
@@ -35,4 +36,3 @@ Tested on Linux and Windows, but MacOS, and really any other OS with CMake, FFmp
     * `cmake --preset=windows ..`
     * `cmake --build .`
     * `.\mathboard`
-
