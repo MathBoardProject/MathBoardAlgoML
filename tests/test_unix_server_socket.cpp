@@ -39,9 +39,9 @@ TEST(UnixSocketServer, Read) {
 }
 
 // TODO
-// Test writing.
-// Currently it returns SIGPIPE in tests since the client (socat) exits early.
-// This works in normal code, but not in tests:
+// Test write functionality.
+// Currently it returns SIGPIPE in write test since the client (socat) exits early.
+// This works in normal executable, but not in tests:
 /*
   mathboard::UnixSocketServer server{};
   server.Init("/tmp/mathboard.sock");
