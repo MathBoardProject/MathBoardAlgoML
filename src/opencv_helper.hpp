@@ -83,9 +83,6 @@ private: // Attributes
   // Should you contine rendering?
   bool m_ShouldRender = false;
 
-  // Whether to render media
-  bool m_RenderMedia = false;
-
   // Blocksize
   std::uint32_t m_Size = 1;
 

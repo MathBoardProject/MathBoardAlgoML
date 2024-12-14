@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(mathboard VERSION 0.0.1 LANGUAGES C CXX)
 
+cmake_policy(SET CMP0135 NEW)
+
+enable_testing()
+
+include(CTest)
 include(CheckCXXCompilerFlag)
+include(FetchContent)
 
 # Enable flag if supported
 function(enable_cxx_compiler_flag_if_supported flag)
@@ -22,16 +28,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Gather source and header files
 file (GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 file (GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "src/*.hpp")
+file (GLOB_RECURSE TESTS CONFIGURE_DEPENDS "tests/*.cpp")
 
 # Check if OpenCV is installed
 find_package(OpenCV REQUIRED)
+
+# Fetch GoogleTest
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 # Enable extra warnings
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
 enable_cxx_compiler_flag_if_supported("-pedantic")
 
-# Add binary
+# Add project binary
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Add include directories
@@ -45,3 +61,21 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE ${OpenCV_LIBS}
 )
 
+# Add MathBoard as a static library
+# Needed for testing
+add_library(mathboard_lib STATIC ${SOURCES})
+target_include_directories(mathboard_lib PRIVATE src PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(mathboard_lib PRIVATE ${OpenCV_LIBS})
+
+
+# Add tests binary
+add_executable(tests ${TESTS})
+
+# Link GoogleTest and MathBoard library
+target_link_libraries(tests
+	PRIVATE GTest::gtest_main
+    PRIVATE mathboard_lib
+)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
