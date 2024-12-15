@@ -36,3 +36,12 @@ Tested on Linux and Windows, but MacOS, and really any other OS with CMake, FFmp
     * `cmake --preset=windows ..`
     * `cmake --build .`
     * `.\mathboard`
+
+# Testing
+* Linux
+   * Install socat:
+      * Fedora: `sudo dnf install socat`
+      * Arch: `sudo pacman -S --needed socat`
+      * Ubuntu: `sudo apt install socat`
+   * [Build the project](https://github.com/mikolajlubiak/MathBoardAlgoML#Build)
+   * `ctest`
