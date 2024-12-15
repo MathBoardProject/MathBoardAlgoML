@@ -15,7 +15,8 @@ Grid::Grid(const cv::Point2f &top_left_corner,
   if (m_CellSize <= 0) {
     std::ofstream debug_stream("debug_output.txt",
                                std::ios::app); // Debug output stream
-    debug_stream << "error: grid.cpp: line 18: m_Cell_Size is " << m_CellSize << "instead of positive number\n";
+    debug_stream << "[Grid::Grid()] Error: m_Cell_Size is "
+                 << m_CellSize << "instead of positive number\n";
     debug_stream.close();
   }
   m_Grid.resize(m_Height);
@@ -99,7 +100,8 @@ bool Grid::HasBeenChecked(std::unordered_multimap<int, int> &checked_pairs,
     if (i->second == pair.second) {
       return true;
     }
-  } 
+  }
+  return false;
 }
 
 } // namespace mathboard
