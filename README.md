@@ -43,5 +43,5 @@ Tested on Linux and Windows, but MacOS, and really any other OS with CMake, FFmp
       * Fedora: `sudo dnf install socat`
       * Arch: `sudo pacman -S --needed socat`
       * Ubuntu: `sudo apt install socat`
-   * [Build the project](/#Build)
+   * [Build the project](https://github.com/MathBoardProject/MathBoardAlgoML#Build)
    * `ctest`
