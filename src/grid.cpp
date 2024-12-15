@@ -15,8 +15,7 @@ Grid::Grid(const cv::Point2f &top_left_corner,
   if (m_CellSize <= 0) {
     std::ofstream debug_stream("debug_output.txt",
                                std::ios::app); // Debug output stream
-    debug_stream << "[Grid::Grid(const cv::Point2f &, const cv::Point2f &, "
-                    "float)] Error: m_Cell_Size is "
+    debug_stream << "[Grid::Grid()] Error: m_Cell_Size is "
                  << m_CellSize << "instead of positive number\n";
     debug_stream.close();
   }

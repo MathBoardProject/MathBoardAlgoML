@@ -8,5 +8,5 @@ bool RasterizeImage(const std::filesystem::path &filename, cv::Mat &output_mat);
 
 // `input_array` has to be grayscale
 // crop image to tightly fit symbol on it
-void CropImageToSymbol(const cv::Mat &input_mat, cv::Mat &output_mat);
+cv::Mat CropImageToSymbol(const cv::Mat &input_mat);
 } // namespace mathboard

@@ -47,14 +47,17 @@ bool RasterizeImage(const std::filesystem::path &filename,
   return true;
 }
 
-void CropImageToSymbol(const cv::Mat &input_mat, cv::Mat &output_mat) {
+cv::Mat CropImageToSymbol(const cv::Mat &input_mat) {
   std::vector<std::vector<cv::Point>> contours;
+  // merges bounding boxes of all objects on image
+  // into one bigger bounding box containing all
+  // content of image
   cv::findContours(input_mat, contours, cv::RETR_CCOMP,
                    cv::CHAIN_APPROX_SIMPLE);
   cv::Rect bounding_box;
   for (std::size_t i = 0; i < contours.size(); i++) {
     bounding_box = bounding_box | cv::boundingRect(contours[i]);
   }
-  output_mat = input_mat(bounding_box);
+  return input_mat(bounding_box);
 }
 } // namespace mathboard
