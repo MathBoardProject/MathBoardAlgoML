@@ -26,12 +26,13 @@ Grid::Grid(const cv::Point2f &top_left_corner,
   }
 }
 
-void Grid::InsertObjects(std::vector<LineInfo> &lines) {
+void Grid::InsertObjects(std::vector<Stroke> &lines) {
   for (std::size_t i = 0; i < lines.size(); i++) {
-    const cv::Rect bounding_box = lines[i].GetBB();
-    cv::Point2f object_min = lines[i].position;
-    cv::Point2f object_max = cv::Point2f{lines[i].position.x + bounding_box.width,
-                                         lines[i].position.y + bounding_box.height};
+    const cv::Rect bounding_box = lines[i].GetBoundingBox();
+    cv::Point2f object_min = lines[i].GetPosition();
+    cv::Point2f object_max =
+        cv::Point2f{lines[i].GetPosition().x + bounding_box.width,
+                    lines[i].GetPosition().y + bounding_box.height};
 
     // calculating position of vertices in grid
     // decrese width and height because containers are 0 index based
@@ -57,7 +58,7 @@ void Grid::InsertObjects(std::vector<LineInfo> &lines) {
         row.resize(m_Width);
       }
       for (std::ptrdiff_t x = body_min_x; x <= body_max_x; x++) {
-        row[x].push_back(lines[i].index);
+        row[x].push_back(lines[i].GetIndex());
       }
     }
   }

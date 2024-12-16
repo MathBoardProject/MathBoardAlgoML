@@ -2,6 +2,7 @@
 
 // local
 #include "grid.hpp"
+#include "stroke.hpp"
 
 // opencv
 #include <opencv2/opencv.hpp>
@@ -10,18 +11,6 @@
 #include <list>
 #include <set>
 #include <vector>
-
-// temporary struct for holding information about image of line
-// some of this members may be useless
-struct LineInfo {
-  // idx of image passed to main
-  int idx;
-  // /position is aligned with img top left corner
-  cv::Point2f position;
-  std::vector<std::vector<cv::Point>> contours;
-  std::vector<cv::Vec4i> hierarchy;
-  cv::Rect GetBB() { return cv::boundingRect(contours); }
-};
 
 namespace mathboard {
 // The Grid class handles broad-phase collision detection by dividing space into
@@ -36,7 +25,7 @@ public:
 
 public:
   // Inserts all lines into grid in appropriate place in space
-  void InsertObjects(std::vector<LineInfo> &lines);
+  void InsertObjects(std::vector<Stroke> &lines);
   // Updates the grid with the positions of the objects.
   // It places each object's ID in the appropriate grid cell based on its
   // position.
