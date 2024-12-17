@@ -20,7 +20,7 @@ namespace mathboard {
 class UnixSocketServer {
 public:
   ~UnixSocketServer() {
-    if (m_SocketServFd != -1) {
+    if (m_SocketServFd > 2) {
       close(m_SocketServFd);
     }
   }
