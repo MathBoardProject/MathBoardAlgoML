@@ -19,6 +19,12 @@ namespace mathboard {
 
 class UnixSocketServer {
 public:
+  ~UnixSocketServer() {
+    if (m_SocketServFd != -1) {
+      close(m_SocketServFd);
+    }
+  }
+
   bool Init(const std::filesystem::path &socket_path);
 
   static void Listen(const std::int32_t socket_fd);
@@ -37,7 +43,7 @@ public:
   std::int32_t getServerSocketFd() const { return m_SocketServFd; }
 
 private:
-  std::int32_t m_SocketServFd;
+  std::int32_t m_SocketServFd = -1;
   std::filesystem::path m_SocketPath;
 };
 
