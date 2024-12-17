@@ -6,23 +6,30 @@
 #include <fstream>
 
 namespace mathboard {
-  
+
 Grid::Grid(const cv::Point2f &top_left_corner,
-           const cv::Point2f &bot_right_corner, float cell_size)
+           const cv::Point2f &bot_right_corner, const cv::Size &cell_size)
     : m_TopLeftCorner(top_left_corner), m_BotRightCorner(bot_right_corner),
       m_CellSize(cell_size),
-      m_Height((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize),
-      m_Width((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize) {
-  if (m_CellSize <= 0) {
+      m_Rows((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize.height),
+      m_Columns((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize.width) {
+  if (m_CellSize.width <= 0) {
     std::ofstream debug_stream("debug_output.txt",
                                std::ios::app); // Debug output stream
-    debug_stream << "[Grid::Grid()] Error: m_Cell_Size is "
-                 << m_CellSize << "instead of positive number\n";
+    debug_stream << "[Grid::Grid()] Error: m_CellSize width is " << m_CellSize
+                 << " instead of positive number\n";
     debug_stream.close();
   }
-  m_Grid.resize(m_Height);
+  if (m_CellSize.height <= 0) {
+    std::ofstream debug_stream("debug_output.txt",
+                               std::ios::app); // Debug output stream
+    debug_stream << "[Grid::Grid()] Error: m_CellSize height is " << m_CellSize
+                 << " instead of positive number\n";
+    debug_stream.close();
+  }
+  m_Grid.resize(m_Rows);
   for (std::size_t i = 0; i < m_Grid.size(); i++) {
-    m_Grid[i].resize(m_Width);
+    m_Grid[i].resize(m_Columns);
   }
 }
 
@@ -37,25 +44,25 @@ void Grid::InsertObjects(std::vector<Stroke> &lines) {
     // calculating position of vertices in grid
     // decrese width and height because containers are 0 index based
     int body_min_x = static_cast<int>(
-        std::floor((object_min.x - m_TopLeftCorner.x) / m_CellSize));
-    body_min_x = std::clamp(body_min_x, 0, static_cast<int>(m_Width - 1));
+        std::floor((object_min.x - m_TopLeftCorner.x) / m_CellSize.width));
+    body_min_x = std::clamp(body_min_x, 0, static_cast<int>(m_Rows - 1));
 
     int body_max_x = static_cast<int>(
-        std::floor((object_max.x - m_TopLeftCorner.x) / m_CellSize));
-    body_max_x = std::clamp(body_max_x, 0, static_cast<int>(m_Width - 1));
+        std::floor((object_max.x - m_TopLeftCorner.x) / m_CellSize.width));
+    body_max_x = std::clamp(body_max_x, 0, static_cast<int>(m_Rows - 1));
 
     int body_min_y = static_cast<int>(
-        std::floor((object_min.y - m_TopLeftCorner.y) / m_CellSize));
-    body_min_y = std::clamp(body_min_y, 0, static_cast<int>(m_Height - 1));
+        std::floor((object_min.y - m_TopLeftCorner.y) / m_CellSize.height));
+    body_min_y = std::clamp(body_min_y, 0, static_cast<int>(m_Columns - 1));
 
     int body_max_y = static_cast<int>(
-        std::floor((object_max.y - m_TopLeftCorner.y)) / m_CellSize);
-    body_max_y = std::clamp(body_max_y, 0, static_cast<int>(m_Height - 1));
+        std::floor((object_max.y - m_TopLeftCorner.y)) / m_CellSize.height);
+    body_max_y = std::clamp(body_max_y, 0, static_cast<int>(m_Columns - 1));
 
     for (std::ptrdiff_t y = body_min_y; y <= body_max_y; y++) {
       auto &row = m_Grid[y];
       if (row.empty()) {
-        row.resize(m_Width);
+        row.resize(m_Columns);
       }
       for (std::ptrdiff_t x = body_min_x; x <= body_max_x; x++) {
         row[x].push_back(lines[i].GetIndex());

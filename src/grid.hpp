@@ -21,7 +21,7 @@ public:
   // defined by the top-left and bottom-right corners, with each cell having the
   // given size.
   Grid(const cv::Point2f &top_left_corner, const cv::Point2f &bot_right_corner,
-       float cell_size);
+       const cv::Size &cell_size);
 
 public:
   // Inserts all lines into grid in appropriate place in space
@@ -39,9 +39,11 @@ private:
 private:
   cv::Point2f m_TopLeftCorner{0.0f, 0.0f};
   cv::Point2f m_BotRightCorner{100.0f, 100.0f};
-  float m_CellSize{10.0f};
-  std::uint32_t m_Height{10};
-  std::uint32_t m_Width{10};
+  cv::Size2f m_CellSize{10.0f, 10.0f};
+  // number of rows in grid
+  std::uint32_t m_Rows{10};
+  // number of columns in grid
+  std::uint32_t m_Columns{10};
   std::vector<std::vector<std::vector<std::uint32_t>>> m_Grid;
 };
 } // namespace mathboard
