@@ -2,6 +2,7 @@
 
 // local
 #include "grid.hpp"
+#include "stroke.hpp"
 
 // opencv
 #include <opencv2/opencv.hpp>
@@ -10,18 +11,6 @@
 #include <list>
 #include <set>
 #include <vector>
-
-// temporary struct for holding information about image of line
-// some of this members may be useless
-struct LineInfo {
-  // idx of image passed to main
-  int idx;
-  // /position is aligned with img top left corner
-  cv::Point2f position;
-  std::vector<std::vector<cv::Point>> contours;
-  std::vector<cv::Vec4i> hierarchy;
-  cv::Rect GetBB() { return cv::boundingRect(contours); }
-};
 
 namespace mathboard {
 // The Grid class handles broad-phase collision detection by dividing space into
@@ -32,11 +21,11 @@ public:
   // defined by the top-left and bottom-right corners, with each cell having the
   // given size.
   Grid(const cv::Point2f &top_left_corner, const cv::Point2f &bot_right_corner,
-       float cell_size);
+       const cv::Size &cell_size);
 
 public:
   // Inserts all lines into grid in appropriate place in space
-  void InsertObjects(std::vector<LineInfo> &lines);
+  void InsertObjects(std::vector<Stroke> &lines);
   // Updates the grid with the positions of the objects.
   // It places each object's ID in the appropriate grid cell based on its
   // position.
@@ -50,9 +39,11 @@ private:
 private:
   cv::Point2f m_TopLeftCorner{0.0f, 0.0f};
   cv::Point2f m_BotRightCorner{100.0f, 100.0f};
-  float m_CellSize{10.0f};
-  std::uint32_t m_Height{10};
-  std::uint32_t m_Width{10};
+  cv::Size2f m_CellSize{10.0f, 10.0f};
+  // number of rows in grid
+  std::uint32_t m_Rows{10};
+  // number of columns in grid
+  std::uint32_t m_Columns{10};
   std::vector<std::vector<std::vector<std::uint32_t>>> m_Grid;
 };
 } // namespace mathboard
