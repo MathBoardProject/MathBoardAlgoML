@@ -12,7 +12,7 @@ int main() {
     return 1;
   }
 
-  server.Listen(server.GetSocketFd());
+  server.Listen(server.getServerSocketFd());
 
   std::cout << "Server is listening" << std::endl;
 
@@ -21,7 +21,7 @@ int main() {
 
   // Loop to handle request
   while (running) {
-    if (server.Accept(server.GetSocketFd(), client_fd,
+    if (server.Accept(server.getServerSocketFd(), client_fd,
                       (sockaddr &)client_addr)) {
       std::cout << "Client connected!" << std::endl;
 
