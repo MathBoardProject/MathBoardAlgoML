@@ -22,6 +22,7 @@ public:
   ~UnixSocketServer() {
     if (m_SocketServFd > 2) {
       close(m_SocketServFd);
+      remove(m_SocketPath);
     }
   }
 
@@ -37,10 +38,11 @@ public:
 
   static bool Write(const std::int32_t socket_fd,
                     const std::vector<std::uint8_t> &buffer);
-
   static bool WriteString(const std::int32_t socket_fd, const std::string &msg);
 
-  std::int32_t getServerSocketFd() const { return m_SocketServFd; }
+  static void CloseSocket(const std::int32_t socket_fd) { close(socket_fd); }
+
+  std::int32_t GetServerSocketFd() const { return m_SocketServFd; }
 
 private:
   std::int32_t m_SocketServFd = -1;
