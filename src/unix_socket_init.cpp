@@ -10,7 +10,7 @@ bool initSocket() {
     return 1;
   }
 
-  server.Listen(server.getServerSocketFd());
+  server.Listen(server.GetServerSocketFd());
 
   std::cout << "Server is listening" << std::endl;
 
@@ -19,7 +19,7 @@ bool initSocket() {
 
   // Loop to handle request
   while (running) {
-    if (server.Accept(server.getServerSocketFd(), client_fd,
+    if (server.Accept(server.GetServerSocketFd(), client_fd,
                       (sockaddr &)client_addr)) {
       std::cout << "Client connected!" << std::endl;
 
@@ -41,13 +41,11 @@ bool initSocket() {
       }
 
       // Close client connection
-      close(client_fd);
+      server.CloseSocket(client_fd);
     } else {
       std::cerr << "Failed to accept the connection" << std::endl;
     }
   }
-
-  remove("socket");
 
   return true;
 }

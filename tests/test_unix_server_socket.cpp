@@ -11,7 +11,7 @@ TEST(UnixSocketServer, Read) {
   mathboard::UnixSocketServer server{};
   EXPECT_TRUE(server.Init("/tmp/mathboard.sock"));
 
-  std::int32_t server_socket_fd = server.getServerSocketFd();
+  std::int32_t server_socket_fd = server.GetServerSocketFd();
 
   server.Listen(server_socket_fd);
 
@@ -40,13 +40,13 @@ TEST(UnixSocketServer, Read) {
 
 // TODO
 // Test write functionality.
-// Currently it returns SIGPIPE in write test since the client (socat) exits early.
-// This works in normal executable, but not in tests:
+// Currently it returns SIGPIPE in write test since the client (socat) exits
+// early. This works in normal executable, but not in tests:
 /*
   mathboard::UnixSocketServer server{};
   server.Init("/tmp/mathboard.sock");
 
-  std::int32_t server_socket_fd = server.getServerSocketFd();
+  std::int32_t server_socket_fd = server.GetServerSocketFd();
 
   server.Listen(server_socket_fd);
 
