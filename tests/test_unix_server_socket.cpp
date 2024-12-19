@@ -1,19 +1,21 @@
 #include <gtest/gtest.h>
 
-#include "../src/unix_socket_server.hpp"
+#include "../src/unix_socket_server/unix_socket_server.hpp"
 
 TEST(UnixSocketServer, Init) {
-  mathboard::UnixSocketServer server{};
-  EXPECT_TRUE(server.Init("/tmp/mathboard.sock"));
+  std::unique_ptr<mathboard::UnixSocketServer> server(
+      mathboard::UnixSocketServer::Instance());
+
+  EXPECT_TRUE(server->Init("/tmp/mathboard.sock"));
 }
 
 TEST(UnixSocketServer, Read) {
-  mathboard::UnixSocketServer server{};
-  EXPECT_TRUE(server.Init("/tmp/mathboard.sock"));
+  std::unique_ptr<mathboard::UnixSocketServer> server(
+      mathboard::UnixSocketServer::Instance());
 
-  std::int32_t server_socket_fd = server.GetServerSocketFd();
+  EXPECT_TRUE(server->Init("/tmp/mathboard.sock"));
 
-  server.Listen(server_socket_fd);
+  server->Listen();
 
   std::string expected_output = "[TEST](UnixSocketServer, Read)";
 
@@ -24,14 +26,13 @@ TEST(UnixSocketServer, Read) {
   system(command.c_str());
 
   std::int32_t socket_cli_fd;
-  sockaddr_un cli_addr{};
+  void *cli_addr;
 
-  EXPECT_TRUE(server.Accept(server_socket_fd, socket_cli_fd,
-                            reinterpret_cast<sockaddr &>(cli_addr)));
+  EXPECT_TRUE(server->Accept(socket_cli_fd, &cli_addr));
 
   std::vector<std::uint8_t> buffer(256);
 
-  EXPECT_TRUE(server.Read(socket_cli_fd, buffer));
+  EXPECT_TRUE(server->Read(socket_cli_fd, buffer));
 
   std::string output(buffer.begin(), buffer.begin() + expected_output.size());
 
@@ -43,30 +44,28 @@ TEST(UnixSocketServer, Read) {
 // Currently it returns SIGPIPE in write test since the client (socat) exits
 // early. This works in normal executable, but not in tests:
 /*
-  mathboard::UnixSocketServer server{};
-  server.Init("/tmp/mathboard.sock");
+  std::unique_ptr<mathboard::UnixSocketServer> server(
+      mathboard::UnixSocketServer::Instance());
 
-  std::int32_t server_socket_fd = server.GetServerSocketFd();
+  server->Init("/tmp/mathboard.sock");
 
-  server.Listen(server_socket_fd);
+  server->Listen();
 
   system("echo 'TEST' | socat - "
          "UNIX-CONNECT:/tmp/mathboard.sock");
 
   std::int32_t socket_cli_fd;
-  sockaddr_un cli_addr{};
+  void* cli_addr{};
 
-  server.Accept(server_socket_fd, socket_cli_fd,
-                reinterpret_cast<sockaddr &>(cli_addr));
+  server->Accept(socket_cli_fd, &cli_addr);
 
   std::vector<std::uint8_t> buffer(256);
 
-  server.Read(socket_cli_fd, buffer);
+  server->Read(socket_cli_fd, buffer);
 
-  for (char c : buffer) {
-    std::cout << c;
-  }
-  std::cout << std::endl;
+  std::string output(buffer.begin(), buffer.end());
 
-  server.WriteString(socket_cli_fd, "Hello, world!\n");
+  std::cout << output << std::endl;
+
+  server->WriteString(socket_cli_fd, "Hello, world!\n");
 */
