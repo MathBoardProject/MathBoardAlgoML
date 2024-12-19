@@ -37,7 +37,6 @@ public:
 
   static bool Write(const std::int32_t socket_fd,
                     const std::vector<std::uint8_t> &buffer);
-
   static bool WriteString(const std::int32_t socket_fd, const std::string &msg);
 
   std::int32_t getServerSocketFd() const { return m_SocketServFd; }
