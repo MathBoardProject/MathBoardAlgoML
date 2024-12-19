@@ -1,12 +1,12 @@
-#include "unix_socket_init.hpp"
+#include "run_unix_socket.hpp"
 #include <iostream>
 
 int main() {
-  if (!initSocket()) {
+  if (!mathboard::runUnixSocket()) {
     std::cerr << "Failed to init the unix socket" << std::endl;
-    return 1;
+    return EXIT_FAILURE;
   }
 
   std::cout << "Unix Socket initialised succesfuly" << std::endl;
-  return 0;
+  return EXIT_SUCCESS;
 }

@@ -1,12 +1,12 @@
 // header
-#include "unix_socket_server.hpp"
+#include "linux_unix_socket_server.hpp"
 
 // std
 #include <fstream>
 
 namespace mathboard {
 
-bool UnixSocketServer::Init(const std::filesystem::path &socket_path) {
+bool LinuxUnixSocketServer::Init(const std::filesystem::path &socket_path) {
   m_SocketPath = socket_path;
 
   // Create the server's socket
@@ -48,19 +48,23 @@ bool UnixSocketServer::Init(const std::filesystem::path &socket_path) {
   return true;
 }
 
-void UnixSocketServer::Listen(const std::int32_t socket_fd) {
+void LinuxUnixSocketServer::Listen() {
   // Sleep until an incoming connection appears
   // Queue up to 16 requests
-  listen(socket_fd, 16);
+  listen(m_SocketServFd, 16);
 }
 
-bool UnixSocketServer::Accept(const std::int32_t socket_serv_fd,
-                              std::int32_t &socket_cli_fd,
-                              sockaddr &sock_cli_addr) {
-  socklen_t sock_cli_len = sizeof(sock_cli_addr);
+bool LinuxUnixSocketServer::Accept(std::int32_t &socket_cli_fd,
+                                   void **sock_cli_addr) {
+  sockaddr_un *sock_cli;
+
+  socklen_t sock_cli_len = sizeof(sockaddr_un);
+
+  sock_cli = reinterpret_cast<sockaddr_un *>(malloc(sock_cli_len));
 
   // Accept the incoming connection
-  socket_cli_fd = accept(socket_serv_fd, &sock_cli_addr, &sock_cli_len);
+  socket_cli_fd = accept(m_SocketServFd, reinterpret_cast<sockaddr *>(sock_cli),
+                         &sock_cli_len);
 
   if (socket_cli_fd < 0) {
     std::ofstream debug_stream("debug_output.txt",
@@ -74,13 +78,14 @@ bool UnixSocketServer::Accept(const std::int32_t socket_serv_fd,
     return false;
   }
 
+  *sock_cli_addr = reinterpret_cast<void *>(sock_cli);
   return true;
 }
 
 // Read bytes from the socket socket_fd and write it into
 // buffer
-bool UnixSocketServer::Read(const std::int32_t socket_fd,
-                            std::vector<std::uint8_t> &buffer) {
+bool LinuxUnixSocketServer::Read(const std::int32_t socket_fd,
+                                 std::vector<std::uint8_t> &buffer) {
   // Read the data into the buffer
   std::ptrdiff_t byte_read = read(socket_fd, buffer.data(), buffer.size() - 1);
 
@@ -99,8 +104,8 @@ bool UnixSocketServer::Read(const std::int32_t socket_fd,
   return true;
 }
 
-bool UnixSocketServer::Write(const std::int32_t socket_fd,
-                             const std::vector<std::uint8_t> &buffer) {
+bool LinuxUnixSocketServer::Write(const std::int32_t socket_fd,
+                                  const std::vector<std::uint8_t> &buffer) {
   // Write buffer to the socket
   std::ptrdiff_t byte_read = write(socket_fd, buffer.data(), buffer.size());
 
@@ -119,8 +124,8 @@ bool UnixSocketServer::Write(const std::int32_t socket_fd,
   return true;
 }
 
-bool UnixSocketServer::WriteString(const std::int32_t socket_fd,
-                                   const std::string &msg) {
+bool LinuxUnixSocketServer::WriteString(const std::int32_t socket_fd,
+                                        const std::string &msg) {
   // Write message to the socket
   std::ptrdiff_t byte_read = write(socket_fd, msg.c_str(), msg.size());
 
