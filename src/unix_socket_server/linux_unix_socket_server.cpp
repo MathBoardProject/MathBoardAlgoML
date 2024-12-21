@@ -1,6 +1,10 @@
 // header
 #include "linux_unix_socket_server.hpp"
 
+// lib
+// spdlog
+#include <spdlog/spdlog.h>
+
 // std
 #include <fstream>
 
@@ -13,13 +17,8 @@ bool LinuxUnixSocketServer::Init(const std::filesystem::path &socket_path) {
   m_SocketServFd = socket(AF_UNIX, SOCK_STREAM, 0);
 
   if (m_SocketServFd < 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream << "[UnixSocketServer::Init] Error: Could not open the socket."
-                 << std::endl;
-
-    debug_stream.close();
+    spdlog::error(
+        "[LinuxUnixSocketServer::Init]: Could not open the socket.\n");
     return false;
   }
 
@@ -33,15 +32,9 @@ bool LinuxUnixSocketServer::Init(const std::filesystem::path &socket_path) {
 
   // Bind the address to the socket
   if (bind(m_SocketServFd, (sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream
-        << "[UnixSocketServer::Init] Error: Could not bind the address to "
-           "the socket."
-        << std::endl;
-
-    debug_stream.close();
+    spdlog::error(
+        "[LinuxUnixSocketServer::Init]: Could not bind the address to the "
+        "socket.\n");
     return false;
   }
 
@@ -66,14 +59,8 @@ bool LinuxUnixSocketServer::Accept(int &socket_cli_fd, void **sock_cli_addr) {
                          &sock_cli_len);
 
   if (socket_cli_fd < 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream
-        << "[UnixSocketServer::Init] Error: Could not accept the connection"
-        << std::endl;
-
-    debug_stream.close();
+    spdlog::error(
+        "[LinuxUnixSocketServer::Accept]: Could not accept the connection.\n");
     return false;
   }
 
@@ -89,14 +76,8 @@ bool LinuxUnixSocketServer::Read(const std::int32_t socket_fd,
   std::ptrdiff_t byte_read = read(socket_fd, buffer.data(), buffer.size() - 1);
 
   if (byte_read < 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream
-        << "[UnixSocketServer::Init] Error: Could not read from the socket"
-        << std::endl;
-
-    debug_stream.close();
+    spdlog::error(
+        "[LinuxUnixSocketServer::Read]: Could not read from the socket.\n");
     return false;
   }
 
@@ -109,14 +90,8 @@ bool LinuxUnixSocketServer::Write(const std::int32_t socket_fd,
   std::ptrdiff_t byte_read = write(socket_fd, buffer.data(), buffer.size());
 
   if (byte_read < 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream
-        << "[UnixSocketServer::Init] Error: Could not write to the socket"
-        << std::endl;
-
-    debug_stream.close();
+    spdlog::error(
+        "[LinuxUnixSocketServer::Write]: Could not write to the socket.\n");
     return false;
   }
 
@@ -129,14 +104,8 @@ bool LinuxUnixSocketServer::WriteString(const std::int32_t socket_fd,
   std::ptrdiff_t byte_read = write(socket_fd, msg.c_str(), msg.size());
 
   if (byte_read < 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream
-        << "[UnixSocketServer::Init] Error: Could not write to the socket"
-        << std::endl;
-
-    debug_stream.close();
+    spdlog::error("[LinuxUnixSocketServer::WriteString]: Could not write to "
+                  "the socket.\n");
     return false;
   }
 

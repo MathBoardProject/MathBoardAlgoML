@@ -25,12 +25,12 @@ TEST(UnixSocketServer, Read) {
 
   system(command.c_str());
 
-  std::int32_t socket_cli_fd;
+  int socket_cli_fd;
   void *cli_addr;
 
   EXPECT_TRUE(server->Accept(socket_cli_fd, &cli_addr));
 
-  std::vector<std::uint8_t> buffer(256);
+  std::vector<unsigned char> buffer(256);
 
   EXPECT_TRUE(server->Read(socket_cli_fd, buffer));
 

@@ -3,6 +3,10 @@
 #include "grid.hpp"
 #include "stroke.hpp"
 
+// libs
+// spdlog
+#include <spdlog/spdlog.h>
+
 // std
 #include <fstream>
 
@@ -10,42 +14,24 @@ namespace mathboard {
 bool RasterizeImage(const std::filesystem::path &filename,
                     cv::Mat &output_mat) {
   if (filename.extension() != ".svg") {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream << "[RasterizeFile] Error: File extension is "
-                 << filename.extension() << " instead of \".svg\"" << std::endl;
-
-    debug_stream.close();
-
+    spdlog::error("[RasterizeFile]: File extension is {} instead of .svg\n",
+                  filename.extension().string());
     return false;
   }
   cv::VideoCapture video_capture{};
   video_capture.open(filename.string());
 
   if (!video_capture.isOpened()) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream << "[RasterizeFile] Error: Could not open video. " << filename
-                 << std::endl;
-
-    debug_stream.close();
-
+    spdlog::error("[RasterizeFile]: Could not open the video {}\n",
+                  filename.string());
     return false;
   }
 
   if (!video_capture.read(output_mat)) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-
-    debug_stream << "[RasterizeFile] Error: video_capture is empty"
-                 << std::endl;
-
-    debug_stream.close();
-
+    spdlog::error("[RasterizeFile]: Video capture is empty\n");
     return false;
   }
+
   return true;
 }
 

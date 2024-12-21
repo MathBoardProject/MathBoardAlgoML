@@ -1,7 +1,10 @@
 #pragma once
 
-// opencv
+// lib
+// OpenCV
 #include <opencv2/opencv.hpp>
+// spdlog
+#include <spdlog/spdlog.h>
 
 // std
 #include <fstream>
@@ -16,12 +19,9 @@ public:
   Stroke(int index, cv::Point2f position, cv::Mat image)
       : m_Index(index), m_Position(position) {
     if (image.channels() != 1) {
-      std::ofstream debug_stream("debug_output.txt",
-                                 std::ios::app); // Debug output stream
-      debug_stream << "[Stroke::Stroke()] Error: image isn't grayscale\n";
-
-      debug_stream.close();
+      spdlog::error("[Stroke::Stroke]: Image isn't grayscale.\n");
     }
+
     cv::findContours(image, m_Contours, cv::RETR_CCOMP,
                      cv::CHAIN_APPROX_SIMPLE);
     for (std::size_t i = 0; i < m_Contours.size(); i++) {
