@@ -1,6 +1,10 @@
 // header
 #include "opencv_helper.hpp"
 
+// lib
+// spdlog
+#include <spdlog/spdlog.h>
+
 // std
 #include <filesystem>
 #include <fstream>
@@ -22,14 +26,7 @@ void OpenCVHelper::OpenFile(const std::filesystem::path &file) {
     m_Frame = cv::imread(file.string());
 
     if (m_Frame.empty()) {
-      std::ofstream debug_stream("debug_output.txt",
-                                 std::ios::app); // Debug output stream
-
-      debug_stream << "[OpenCVHelper::OpenFile] Error: Could not open image."
-                   << file << std::endl;
-
-      debug_stream.close();
-
+      spdlog::error("[OpenCVHelper::OpenFile]: Could not open the image.\n");
       return;
     }
 
@@ -46,14 +43,7 @@ void OpenCVHelper::OpenFile(const std::filesystem::path &file) {
     }
 
     if (!m_VideoCapture.isOpened()) {
-      std::ofstream debug_stream("debug_output.txt",
-                                 std::ios::app); // Debug output stream
-
-      debug_stream << "[OpenCVHelper::OpenFile] Error: Could not open video. "
-                   << file << std::endl;
-
-      debug_stream.close();
-
+      spdlog::error("[OpenCVHelper::OpenFile]: Could not open the video.\n");
       return;
     }
 
