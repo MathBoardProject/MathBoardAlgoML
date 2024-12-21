@@ -24,7 +24,7 @@ bool runUnixSocket() {
   std::cout << "Server is listening" << std::endl;
 
   void *client_addr;
-  std::int32_t client_fd;
+  int client_fd;
 
   // Loop to handle request
   while (running) {
@@ -32,7 +32,7 @@ bool runUnixSocket() {
       std::cout << "Client connected!" << std::endl;
 
       // Message reading and response
-      std::vector<std::uint8_t> buffer(256);
+      std::vector<unsigned char> buffer(256);
 
       server->Read(client_fd, buffer);
 

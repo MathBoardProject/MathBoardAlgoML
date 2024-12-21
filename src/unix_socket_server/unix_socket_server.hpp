@@ -17,13 +17,13 @@ public:
 
   virtual void Listen() = 0;
 
-  virtual bool Accept(std::int32_t &socket_cli_fd, void **sock_cli_addr) = 0;
+  virtual bool Accept(int &socket_cli_fd, void **sock_cli_addr) = 0;
 
   virtual bool Read(const std::int32_t socket_fd,
-                    std::vector<std::uint8_t> &buffer) = 0;
+                    std::vector<unsigned char> &buffer) = 0;
 
   virtual bool Write(const std::int32_t socket_fd,
-                     const std::vector<std::uint8_t> &buffer) = 0;
+                     const std::vector<unsigned char> &buffer) = 0;
 
   virtual bool WriteString(const std::int32_t socket_fd,
                            const std::string &msg) = 0;
@@ -31,7 +31,7 @@ public:
   virtual std::int32_t GetServerSocketFd() const { return m_SocketServFd; }
 
 protected:
-  std::int32_t m_SocketServFd = -1;
+  int m_SocketServFd = -1;
   std::filesystem::path m_SocketPath{};
 };
 

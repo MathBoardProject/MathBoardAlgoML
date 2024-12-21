@@ -54,8 +54,7 @@ void LinuxUnixSocketServer::Listen() {
   listen(m_SocketServFd, 16);
 }
 
-bool LinuxUnixSocketServer::Accept(std::int32_t &socket_cli_fd,
-                                   void **sock_cli_addr) {
+bool LinuxUnixSocketServer::Accept(int &socket_cli_fd, void **sock_cli_addr) {
   sockaddr_un *sock_cli;
 
   socklen_t sock_cli_len = sizeof(sockaddr_un);
@@ -85,7 +84,7 @@ bool LinuxUnixSocketServer::Accept(std::int32_t &socket_cli_fd,
 // Read bytes from the socket socket_fd and write it into
 // buffer
 bool LinuxUnixSocketServer::Read(const std::int32_t socket_fd,
-                                 std::vector<std::uint8_t> &buffer) {
+                                 std::vector<unsigned char> &buffer) {
   // Read the data into the buffer
   std::ptrdiff_t byte_read = read(socket_fd, buffer.data(), buffer.size() - 1);
 
@@ -105,7 +104,7 @@ bool LinuxUnixSocketServer::Read(const std::int32_t socket_fd,
 }
 
 bool LinuxUnixSocketServer::Write(const std::int32_t socket_fd,
-                                  const std::vector<std::uint8_t> &buffer) {
+                                  const std::vector<unsigned char> &buffer) {
   // Write buffer to the socket
   std::ptrdiff_t byte_read = write(socket_fd, buffer.data(), buffer.size());
 
