@@ -3,21 +3,21 @@
 
 // std
 #include <fstream>
+#include <iostream>
 
 Network::Network(const std::vector<u_int32_t> &layers_sizes)
     : m_LayersSizes(layers_sizes) {
   for (std::size_t l = 1; l < m_LayersSizes.size(); l++) {
 
     cv::Mat biases = cv::Mat::zeros(layers_sizes[l], 1, CV_64F);
-    cv::randu(biases, -1.0f, 1.0f);
+    cv::randu(biases, 0.0, 1.0);
     m_Biases.push_back(biases);
 
     cv::Mat weights =
         cv::Mat::zeros(layers_sizes[l], layers_sizes[l - 1], CV_64F);
-    // Xavier initialization
-    const float limit =
-        std::sqrt(6.0f / (layers_sizes[l] + layers_sizes[l - 1]));
-    cv::randu(weights, -limit, limit);
+    const double limit =
+        std::sqrt(1.0 / (layers_sizes[l] + layers_sizes[l - 1]));
+    cv::randu(weights, 0, limit);
     m_Weights.push_back(weights);
   }
 }
@@ -25,12 +25,8 @@ Network::Network(const std::vector<u_int32_t> &layers_sizes)
 std::vector<double>
 Network::FeedForward(const std::vector<double> &input) const {
   if (input.size() != m_LayersSizes[0]) {
-    std::ofstream debug_output("debug_output.txt", std::ios::app);
-
-    debug_output << "[Network::FeedForward] Error: input size doesn't match "
-                    "m_LayersSizes[0] size\n";
-
-    debug_output.close();
+    spdlog::error("[Network::FeedForward] Error: input size doesn't match "
+                  "m_LayersSizes[0] size\n");
   }
 
   cv::Mat activation = cv::Mat(input).reshape(1, input.size());
@@ -48,24 +44,40 @@ Network::FeedForward(const std::vector<double> &input) const {
 }
 
 void Network::SochasticGradientDescent(std::vector<Sample> &training_data,
-                                       std::size_t epochs, int mini_batch_size,
-                                       float learning_rate,
+                                       std::size_t epochs,
+                                       std::size_t mini_batch_size,
+                                       double learning_rate,
+                                       double regularization_parameter,
                                        const std::vector<Sample> &test_data) {
+
+  if (regularization_parameter < 0) {
+    spdlog::error("[Network::SochasticGradientDescent] Error: "
+                  "regularization_parameter have to not negative number\n");
+  }
+  if (learning_rate <= 0) {
+    spdlog::error("[Network::SochasticGradientDescent] Error: "
+                  "regularization_parameter have to be positive number\n");
+  }
+
+  const double weight_decay_factor =
+      (1.0 - (learning_rate * regularization_parameter / training_data.size()));
+
   for (std::size_t i = 0; i < epochs; i++) {
-    // TODO: random shuffle training data
-    auto mini_batches = PartitionVector<Sample>(training_data, mini_batch_size);
+    std::vector<std::vector<Sample>> mini_batches = PartitionVector<Sample>(
+        ShuffleVector<Sample>(training_data), mini_batch_size);
     for (std::size_t j = 0; j < mini_batches.size(); j++) {
-      UpdateMiniBatch(mini_batches[j], learning_rate);
+      UpdateMiniBatch(mini_batches[j], learning_rate, weight_decay_factor);
     }
     if (test_data.size() != 0) {
-      std::cout << "Epoch: " << i << " " << Evaluate(test_data) * 100.0f
+      std::cout << "Epoch: " << i << " " << Evaluate(test_data) * 100.0
                 << "%\n";
     }
   }
 }
 
 void Network::UpdateMiniBatch(const std::vector<Sample> &mini_batch,
-                              float learning_rate) {
+                              double learning_rate,
+                              double weight_decay_factor) {
   // partial derrivative of cost function with respect to biases
   std::vector<cv::Mat> bias_gradient;
   bias_gradient.resize(m_Biases.size());
@@ -98,15 +110,19 @@ void Network::UpdateMiniBatch(const std::vector<Sample> &mini_batch,
   }
 
   for (std::size_t i = 0; i < m_Weights.size(); i++) {
-    m_Weights[i] -= (learning_rate / mini_batch.size()) * weight_gradient[i];
+    // m_Weights[i] -= (learning_rate / mini_batch.size()) * weight_gradient[i];
+    m_Weights[i] = weight_decay_factor * m_Weights[i] -
+                   (learning_rate / mini_batch.size()) * weight_gradient[i];
   }
 }
 
 double Network::Evaluate(const std::vector<Sample> &test_data) {
   double correct_guesses = 0.0;
   for (std::size_t i = 0; i < test_data.size(); i++) {
-    auto output = FeedForward(test_data[i].input);
-    if (FindMaxIndex(output) == FindMaxIndex(test_data[i].expectedOutput)) {
+    std::vector<double> output = FeedForward(test_data[i].input);
+    if (FindMaxIndex(output.begin(), output.end()) ==
+        FindMaxIndex(test_data[i].expectedOutput.begin(),
+                     test_data[i].expectedOutput.end())) {
       correct_guesses++;
     }
   }
@@ -138,8 +154,13 @@ void Network::Backpropagation(const Sample &training_data,
       cv::Mat(training_data.expectedOutput)
           .reshape(1, training_data.expectedOutput.size());
 
-  cv::Mat error = (activations.back() - expected_output)
-                      .mul(SigmoidDerivative(weighted_inputs.back()));
+  // quadratic cost function
+  // cv::Mat error = (activations.back() - expected_output)
+  //                     .mul(SigmoidDerivative(weighted_inputs.back()));
+
+  // cross entropy function
+  cv::Mat error = (activations.back() - expected_output);
+
   // error of output layer
   delta_bias_gradient.back() = error;
   delta_weight_gradient.back() =
