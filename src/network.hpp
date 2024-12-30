@@ -33,7 +33,7 @@ public:
   // Initializes network layers, biases, and weights using the given layer
   // sizes. Weights are initialized with Xavier initialization for training
   // stability.
-  Network(const std::vector<u_int32_t> &layers_sizes);
+  Network(const std::vector<uint32_t> &layers_sizes);
 
   // Returns a vector where the index of the highest value represents the
   // predicted answer. The `input` size must match the size of the network's
@@ -72,7 +72,7 @@ private:
                        std::vector<cv::Mat> &delta_weight_gradient);
 
 private:
-  std::vector<u_int32_t> m_LayersSizes;
+  std::vector<uint32_t> m_LayersSizes;
   std::vector<cv::Mat> m_Biases;
   std::vector<cv::Mat> m_Weights;
 };
@@ -81,10 +81,10 @@ template <typename T>
 std::vector<std::vector<T>> PartitionVector(const std::vector<T> &input,
                                             std::size_t partition_size) {
   if (input.size() == 0) {
-    spdlog::error("[PartitionVector] Error: input vector is empty\n");
+    spdlog::error("[PartitionVector]: input vector is empty\n");
   }
   if (partition_size == 0 || partition_size > input.size()) {
-    spdlog::error("[PartitionVector] Error: partition_size must be in range "
+    spdlog::error("[PartitionVector]: partition_size must be in range "
                   "( 0, input.size() ) and yours is {}",
                   partition_size);
   }
