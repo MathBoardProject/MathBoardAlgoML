@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-Network::Network(const std::vector<u_int32_t> &layers_sizes)
+Network::Network(const std::vector<uint32_t> &layers_sizes)
     : m_LayersSizes(layers_sizes) {
   for (std::size_t l = 1; l < m_LayersSizes.size(); l++) {
 
@@ -25,7 +25,7 @@ Network::Network(const std::vector<u_int32_t> &layers_sizes)
 std::vector<double>
 Network::FeedForward(const std::vector<double> &input) const {
   if (input.size() != m_LayersSizes[0]) {
-    spdlog::error("[Network::FeedForward] Error: input size doesn't match "
+    spdlog::error("[Network::FeedForward]: input size doesn't match "
                   "m_LayersSizes[0] size\n");
   }
 
@@ -34,8 +34,7 @@ Network::FeedForward(const std::vector<double> &input) const {
   for (std::size_t i = 0; i < m_Weights.size(); i++) {
     cv::Mat weighted_input;
     cv::gemm(m_Weights[i], activation, 1.0f, m_Biases[i], 1.0f, weighted_input);
-    activation = weighted_input.clone();
-    activation = Sigmoid(weighted_input);
+    activation = Sigmoid(weighted_input).clone();
   }
 
   std::vector<double> output;
@@ -50,13 +49,13 @@ void Network::SochasticGradientDescent(std::vector<Sample> &training_data,
                                        double regularization_parameter,
                                        const std::vector<Sample> &test_data) {
 
-  if (regularization_parameter < 0) {
-    spdlog::error("[Network::SochasticGradientDescent] Error: "
-                  "regularization_parameter have to not negative number\n");
+  if (regularization_parameter < 0.0) {
+    spdlog::error("[Network::SochasticGradientDescent]: "
+                  "regularization_parameter have to non negative number\n");
   }
-  if (learning_rate <= 0) {
-    spdlog::error("[Network::SochasticGradientDescent] Error: "
-                  "regularization_parameter have to be positive number\n");
+  if (learning_rate <= 0.0) {
+    spdlog::error("[Network::SochasticGradientDescent]: "
+                  "regularization_parameter have to be a positive number\n");
   }
 
   const double weight_decay_factor =
@@ -144,8 +143,7 @@ void Network::Backpropagation(const Sample &training_data,
     cv::Mat weighted_input;
     cv::gemm(m_Weights[i], activation, 1.0f, m_Biases[i], 1.0f, weighted_input);
     weighted_inputs.push_back(weighted_input);
-    activation = weighted_input.clone();
-    activation = Sigmoid(weighted_input);
+    activation = Sigmoid(weighted_input).clone();
     activations.push_back(activation);
   }
 
@@ -153,10 +151,6 @@ void Network::Backpropagation(const Sample &training_data,
   const cv::Mat expected_output =
       cv::Mat(training_data.expectedOutput)
           .reshape(1, training_data.expectedOutput.size());
-
-  // quadratic cost function
-  // cv::Mat error = (activations.back() - expected_output)
-  //                     .mul(SigmoidDerivative(weighted_inputs.back()));
 
   // cross entropy function
   cv::Mat error = (activations.back() - expected_output);
