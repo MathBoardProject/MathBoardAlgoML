@@ -77,6 +77,9 @@ private:
   std::vector<cv::Mat> m_Weights;
 };
 
+cv::Mat Sigmoid(const cv::Mat &weighted_input);
+cv::Mat SigmoidDerivative(const cv::Mat &weighted_input);
+
 template <typename T>
 std::vector<std::vector<T>> PartitionVector(const std::vector<T> &input,
                                             std::size_t partition_size) {
