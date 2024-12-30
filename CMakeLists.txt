@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.11.0)
 project(mathboard VERSION 0.0.1 LANGUAGES C CXX)
 
 cmake_policy(SET CMP0135 NEW)
@@ -42,30 +42,51 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Fetch spdlog
+FetchContent_Declare(
+      spdlog
+      GIT_REPOSITORY https://github.com/gabime/spdlog.git
+      GIT_TAG v1.15.0
+)
+FetchContent_MakeAvailable(spdlog)
+
 # Enable extra warnings
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
 enable_cxx_compiler_flag_if_supported("-pedantic")
 
 # Add project binary
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Add include directories
 target_include_directories(${PROJECT_NAME}
 	PRIVATE src
 	PRIVATE ${OpenCV_INCLUDE_DIRS}
+    PRIVATE spdlog::spdlog
 )
 
 # Add libraries to link
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE ${OpenCV_LIBS}
+    PRIVATE spdlog::spdlog
 )
 
 # Add MathBoard as a static library
 # Needed for testing
-add_library(mathboard_lib STATIC ${SOURCES})
-target_include_directories(mathboard_lib PRIVATE src PRIVATE ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(mathboard_lib PRIVATE ${OpenCV_LIBS})
+add_library(${PROJECT_NAME}_lib STATIC ${SOURCES} ${HEADERS})
+
+# Add include directories
+target_include_directories(${PROJECT_NAME}_lib
+	PRIVATE src
+	PRIVATE ${OpenCV_INCLUDE_DIRS}
+    PRIVATE spdlog::spdlog
+)
+
+# Add libraries to link
+target_link_libraries(${PROJECT_NAME}_lib
+	PRIVATE ${OpenCV_LIBS}
+    PRIVATE spdlog::spdlog
+)
 
 
 # Add tests binary

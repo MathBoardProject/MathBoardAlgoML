@@ -2,31 +2,28 @@
 #include "grid.hpp"
 #include "common.hpp"
 
+// lib
+// spdlog
+#include <spdlog/spdlog.h>
+
 // std
 #include <fstream>
 
 namespace mathboard {
 
 Grid::Grid(const cv::Point2f &top_left_corner,
-           const cv::Point2f &bot_right_corner, const cv::Size &cell_size)
+           const cv::Point2f &bot_right_corner, const cv::Size2i &cell_size)
     : m_TopLeftCorner(top_left_corner), m_BotRightCorner(bot_right_corner),
       m_CellSize(cell_size),
       m_Rows((m_BotRightCorner.y - m_TopLeftCorner.y) / m_CellSize.height),
       m_Columns((m_BotRightCorner.x - m_TopLeftCorner.x) / m_CellSize.width) {
-  if (m_CellSize.width <= 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-    debug_stream << "[Grid::Grid()] Error: m_CellSize width is " << m_CellSize
-                 << " instead of positive number\n";
-    debug_stream.close();
+
+  if (m_CellSize.width <= 0 || m_CellSize.height <= 0) {
+    spdlog::error("[Grid::Grid]: m_CellSize width and height are {}, {} "
+                  "instead of a positive number\n",
+                  m_CellSize.width, m_CellSize.height);
   }
-  if (m_CellSize.height <= 0) {
-    std::ofstream debug_stream("debug_output.txt",
-                               std::ios::app); // Debug output stream
-    debug_stream << "[Grid::Grid()] Error: m_CellSize height is " << m_CellSize
-                 << " instead of positive number\n";
-    debug_stream.close();
-  }
+
   m_Grid.resize(m_Rows);
   for (std::size_t i = 0; i < m_Grid.size(); i++) {
     m_Grid[i].resize(m_Columns);

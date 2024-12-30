@@ -21,9 +21,8 @@ public:
   // defined by the top-left and bottom-right corners, with each cell having the
   // given size.
   Grid(const cv::Point2f &top_left_corner, const cv::Point2f &bot_right_corner,
-       const cv::Size &cell_size);
+       const cv::Size2i &cell_size);
 
-public:
   // Inserts all lines into grid in appropriate place in space
   void InsertObjects(std::vector<Stroke> &lines);
   // Updates the grid with the positions of the objects.
@@ -36,10 +35,9 @@ private:
   bool HasBeenChecked(std::unordered_multimap<int, int> &checked_pairs,
                       std::pair<int, int> pair) const;
 
-private:
   cv::Point2f m_TopLeftCorner{0.0f, 0.0f};
   cv::Point2f m_BotRightCorner{100.0f, 100.0f};
-  cv::Size2f m_CellSize{10.0f, 10.0f};
+  cv::Size2i m_CellSize{10, 10};
   // number of rows in grid
   std::uint32_t m_Rows{10};
   // number of columns in grid
