@@ -55,7 +55,7 @@ void Network::SochasticGradientDescent(std::vector<Sample> &training_data,
   }
   if (learning_rate <= 0.0) {
     spdlog::error("[Network::SochasticGradientDescent]: "
-                  "regularization_parameter have to be a positive number\n");
+                  "learning_rate have to be a positive number\n");
   }
 
   const double weight_decay_factor =
