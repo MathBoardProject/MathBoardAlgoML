@@ -1,12 +1,19 @@
-#include "run_unix_socket.hpp"
-#include <iostream>
+// local
+#include "helper/solve_equation.hpp"
 
-int main() {
-  if (!mathboard::runUnixSocket()) {
-    std::cerr << "Failed to init the unix socket" << std::endl;
+// libs
+// spdlog
+#include <spdlog/spdlog.h>
+
+int main(int argc, char **argv) {
+  if (argc != 2) {
+    spdlog::error("[main]: Usage: {} <image_path>", argv[0]);
     return EXIT_FAILURE;
   }
 
-  std::cout << "Unix Socket initialised succesfuly" << std::endl;
+  const std::string imagePath = argv[1];
+
+  mathboard::solveImage(imagePath);
+
   return EXIT_SUCCESS;
 }

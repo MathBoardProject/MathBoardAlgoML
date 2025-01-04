@@ -50,6 +50,8 @@ public:
     return m_VideoCapture.get(cv::CAP_PROP_FRAME_COUNT);
   }
 
+  cv::Mat GetFrame() const { return m_Frame; }
+
   // Get whether a video or an image is loaded
   bool IsVideo() const { return m_IsVideo; }
 
