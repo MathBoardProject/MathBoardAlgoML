@@ -60,7 +60,7 @@ enable_cxx_compiler_flag_if_supported("-pedantic")
 # Add project binary
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-# Add libraries to link
+# Add include directories
 target_include_directories(${PROJECT_NAME}
 	PRIVATE src
 	PRIVATE ${OpenCV_INCLUDE_DIRS}
