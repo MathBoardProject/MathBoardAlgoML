@@ -112,9 +112,9 @@ cv::Mat BinarizeImage(const cv::Mat &input_mat) {
 std::string RecognizeText(const cv::Mat &img) {
   tesseract::TessBaseAPI ocr;
   if (ocr.Init(nullptr, "eng", tesseract::OEM_LSTM_ONLY)) {
-    spdlog::error("[ImageToString]: Could not initialize Tesseract.\n");
+    spdlog::error("[RecognizeText]: Could not initialize Tesseract.\n");
     throw std::runtime_error(
-        "[ImageToString] Error: Could not initialize Tesseract.");
+        "[RecognizeText] Error: Could not initialize Tesseract.");
   }
 
   ocr.SetImage(img.data, img.cols, img.rows, 1, img.step);
@@ -122,9 +122,9 @@ std::string RecognizeText(const cv::Mat &img) {
   ocr.End();
 
   if (text.empty()) {
-    spdlog::error("[ImageToString]: OCR did not recognize any text.\n");
+    spdlog::error("[RecognizeText]: OCR did not recognize any text.\n");
     throw std::runtime_error(
-        "[ImageToString] Error: OCR did not recognize any text.");
+        "[RecognizeText] Error: OCR did not recognize any text.");
   }
 
   return text;
