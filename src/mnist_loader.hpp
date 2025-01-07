@@ -15,11 +15,5 @@ struct MNISTData {
 };
 
 MNISTData loadMNIST(const std::string &filename);
-
-std::vector<uint8_t> flattenImage(const std::vector<uint8_t> &image);
-
-std::vector<std::vector<uint8_t>>
-flattenImages(const std::vector<std::vector<uint8_t>> &images);
-
 } // namespace mnistLoader
 } // namespace mathboard

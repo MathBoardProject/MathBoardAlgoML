@@ -7,8 +7,8 @@
 #include <spdlog/spdlog.h>
 
 
-namespace mathboard {   // maybe change to mnistLoader
-namespace mnistLoader { // Not sure if it is great idea, but looks fine.
+namespace mathboard {
+namespace mnistLoader {
 
 uint32_t readBigEndian(std::ifstream &stream) { // Reads 4 bytes
   uint32_t result = 0;
