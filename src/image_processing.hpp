@@ -20,4 +20,14 @@ cv::Mat CropImageToSymbol(const cv::Mat &input_mat);
 // automaticaly
 Grid PlceOnGrid(const std::vector<cv::Mat> &grayscale_images,
                 const std::vector<cv::Point2f> &images_positions);
+
+// Return grascaled version of input image
+cv::Mat GrayScaleImage(const cv::Mat &input_mat);
+
+// Return image binarized using threshold.
+cv::Mat BinarizeImage(const cv::Mat &input_mat);
+
+// Returns image string
+std::string RecognizeText(const cv::Mat &img);
+
 } // namespace mathboard
