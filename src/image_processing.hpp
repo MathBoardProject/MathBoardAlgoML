@@ -22,4 +22,14 @@ cv::Mat CropImageToSymbol(const cv::Mat &input_mat);
 // it sets grid cell size and boundaries of it
 // automaticaly
 Grid PlaceOnGrid(std::vector<mathboard::Stroke> &strokes);
+
+// Return grascaled version of input image
+cv::Mat GrayScaleImage(const cv::Mat &input_mat);
+
+// Return image binarized using threshold.
+cv::Mat BinarizeImage(const cv::Mat &input_mat);
+
+// Returns image string
+std::string RecognizeText(const cv::Mat &img);
+
 } // namespace mathboard

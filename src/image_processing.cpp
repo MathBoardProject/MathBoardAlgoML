@@ -6,6 +6,8 @@
 // libs
 // spdlog
 #include <spdlog/spdlog.h>
+// tesseract
+#include <tesseract/baseapi.h>
 
 // std
 #include <fstream>
@@ -83,6 +85,39 @@ Grid PlaceOnGrid(std::vector<mathboard::Stroke> &strokes) {
     grid.InsertStroke(&strokes[i]);
   }
   return grid;
+}
+
+cv::Mat GrayScaleImage(const cv::Mat &input_mat) {
+  cv::Mat greyImg;
+  cv::cvtColor(input_mat, greyImg, cv::COLOR_BGR2GRAY);
+  return greyImg;
+}
+
+cv::Mat BinarizeImage(const cv::Mat &input_mat) {
+  cv::Mat binarizedImg;
+  cv::threshold(input_mat, binarizedImg, 128, 255, cv::THRESH_BINARY);
+  return binarizedImg;
+}
+
+std::string RecognizeText(const cv::Mat &img) {
+  tesseract::TessBaseAPI ocr;
+  if (ocr.Init(nullptr, "eng", tesseract::OEM_LSTM_ONLY)) {
+    spdlog::error("[RecognizeText]: Could not initialize Tesseract.\n");
+    throw std::runtime_error(
+        "[RecognizeText] Error: Could not initialize Tesseract.");
+  }
+
+  ocr.SetImage(img.data, img.cols, img.rows, 1, img.step);
+  std::string text = ocr.GetUTF8Text();
+  ocr.End();
+
+  if (text.empty()) {
+    spdlog::error("[RecognizeText]: OCR did not recognize any text.\n");
+    throw std::runtime_error(
+        "[RecognizeText] Error: OCR did not recognize any text.");
+  }
+
+  return text;
 }
 
 } // namespace mathboard

@@ -32,6 +32,8 @@ file (GLOB_RECURSE TESTS CONFIGURE_DEPENDS "tests/*.cpp")
 
 # Check if OpenCV is installed
 find_package(OpenCV REQUIRED)
+find_package(Tesseract REQUIRED)
+find_package(SymEngine REQUIRED)
 
 # Fetch GoogleTest
 FetchContent_Declare(
@@ -63,16 +65,20 @@ target_include_directories(${PROJECT_NAME}
 	PRIVATE src
 	PRIVATE ${OpenCV_INCLUDE_DIRS}
     PRIVATE spdlog::spdlog
+    PRIVATE ${Tesseract_INCLUDE_DIRS}
+    PRIVATE ${SYMENGINE_INCLUDE_DIRS}
 )
 
 # Add libraries to link
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE ${OpenCV_LIBS}
     PRIVATE spdlog::spdlog
+    PRIVATE ${Tesseract_LIBRARIES}
+    PRIVATE ${SYMENGINE_LIBRARIES}
 )
 
+
 # Add MathBoard as a static library
-# Needed for testing
 add_library(${PROJECT_NAME}_lib STATIC ${SOURCES} ${HEADERS})
 
 # Add include directories
@@ -80,12 +86,16 @@ target_include_directories(${PROJECT_NAME}_lib
 	PRIVATE src
 	PRIVATE ${OpenCV_INCLUDE_DIRS}
     PRIVATE spdlog::spdlog
+    PRIVATE ${Tesseract_INCLUDE_DIRS}
+    PRIVATE ${SYMENGINE_INCLUDE_DIRS}
 )
 
 # Add libraries to link
 target_link_libraries(${PROJECT_NAME}_lib
 	PRIVATE ${OpenCV_LIBS}
     PRIVATE spdlog::spdlog
+    PRIVATE ${Tesseract_LIBRARIES}
+    PRIVATE ${SYMENGINE_LIBRARIES}
 )
 
 
@@ -95,7 +105,7 @@ add_executable(tests ${TESTS})
 # Link GoogleTest and MathBoard library
 target_link_libraries(tests
 	PRIVATE GTest::gtest_main
-    PRIVATE mathboard_lib
+    PRIVATE ${PROJECT_NAME}_lib
 )
 
 include(GoogleTest)
