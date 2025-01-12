@@ -11,6 +11,7 @@
 #include <fstream>
 #include <list>
 #include <vector>
+#include <unordered_set>
 
 template <typename T> concept HasPosition = requires(T object) {
   object.GetPosition();
@@ -54,7 +55,6 @@ public:
 
     m_Grid.resize(m_Rows * m_Columns);
   }
-  Grid &operator=(const Grid &other) = default;
 
   // Insert object to grid.
   void Insert(T *object) {
@@ -70,23 +70,23 @@ public:
     // decrese width and height because containers are 0 index based
     int body_min_x = static_cast<int>(
         std::floor((object_min.x - m_TopLeftCorner.x) / m_CellSize.width));
-    body_min_x = std::clamp(body_min_x, 0, static_cast<int>(m_Rows - 1));
+    body_min_x = std::clamp(body_min_x, 0, static_cast<int>(m_Columns - 1));
 
     int body_max_x = static_cast<int>(
         std::floor((object_max.x - m_TopLeftCorner.x) / m_CellSize.width));
-    body_max_x = std::clamp(body_max_x, 0, static_cast<int>(m_Rows - 1));
+    body_max_x = std::clamp(body_max_x, 0, static_cast<int>(m_Columns - 1));
 
     int body_min_y = static_cast<int>(
         std::floor((object_min.y - m_TopLeftCorner.y) / m_CellSize.height));
-    body_min_y = std::clamp(body_min_y, 0, static_cast<int>(m_Columns - 1));
+    body_min_y = std::clamp(body_min_y, 0, static_cast<int>(m_Rows - 1));
 
     int body_max_y = static_cast<int>(
         std::floor((object_max.y - m_TopLeftCorner.y)) / m_CellSize.height);
-    body_max_y = std::clamp(body_max_y, 0, static_cast<int>(m_Columns - 1));
+    body_max_y = std::clamp(body_max_y, 0, static_cast<int>(m_Rows - 1));
 
     for (std::ptrdiff_t x = body_min_x; x <= body_max_x; x++) {
       for (std::ptrdiff_t y = body_min_y; y <= body_max_y; y++) {
-        m_Grid[x + m_Rows * y].push_back(object);
+        m_Grid[x + m_Columns * y].push_back(object);
       }
     }
   }
@@ -127,6 +127,17 @@ public:
     for (auto &cell : m_Grid) {
       cell.clear();
     }
+  }
+
+  // Returns number of unique objects inside Grid
+  std::size_t Size() const {
+    std::unordered_set<T *> counter;
+    for(auto &cell : m_Grid) {
+      for(auto &object : cell) {
+        counter.insert(object);
+      }
+    }
+    return counter.size();
   }
 
 private:

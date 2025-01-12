@@ -46,6 +46,12 @@ cv::Mat CropImageToSymbol(const cv::Mat &input_mat) {
   return input_mat(bounding_box);
 }
 
+cv::Mat GrayScaleImage(const cv::Mat &input_mat) {
+  cv::Mat greyImg;
+  cv::cvtColor(input_mat, greyImg, cv::COLOR_BGR2GRAY);
+  return greyImg;
+}
+
 cv::Mat BinarizeImage(const cv::Mat &input_mat) {
   cv::Mat binarizedImg;
   cv::threshold(input_mat, binarizedImg, 128, 255, cv::THRESH_BINARY);
