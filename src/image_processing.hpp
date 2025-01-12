@@ -21,6 +21,15 @@ cv::Mat CropImageToSymbol(const cv::Mat &input_mat);
 // their positions ready to further interpreatation
 // it sets grid cell size and boundaries of it
 // automaticaly
+// Return grascaled version of input image
+cv::Mat GrayScaleImage(const cv::Mat &input_mat);
+
+// Return image binarized using threshold.
+cv::Mat BinarizeImage(const cv::Mat &input_mat);
+
+// Returns image string
+std::string RecognizeText(const cv::Mat &img);
+
 inline Grid<mathboard::Stroke>
 PlaceOnGrid(std::vector<mathboard::Stroke> &strokes) {
   // calculate boundaries of grid
