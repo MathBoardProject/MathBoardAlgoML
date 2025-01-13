@@ -89,6 +89,7 @@ public:
         m_Grid[x + m_Columns * y].push_back(object);
       }
     }
+    m_Size++;
   }
 
   // Returns list of pairs of objects inside the same grid cell.
@@ -127,17 +128,12 @@ public:
     for (auto &cell : m_Grid) {
       cell.clear();
     }
+    m_Size = 0;
   }
 
   // Returns number of unique objects inside Grid
   std::size_t Size() const {
-    std::unordered_set<T *> counter;
-    for(auto &cell : m_Grid) {
-      for(auto &object : cell) {
-        counter.insert(object);
-      }
-    }
-    return counter.size();
+    return m_Size;
   }
 
 private:
@@ -157,6 +153,8 @@ private:
   cv::Point2f m_TopLeftCorner{0.0f, 0.0f};
   cv::Point2f m_BotRightCorner{0.0f, 0.0f};
   cv::Size2i m_CellSize{0, 0};
+  // Number of unique objects inside Grid
+  std::size_t m_Size{0};
   std::uint32_t m_Rows{0};
   std::uint32_t m_Columns{0};
   std::vector<std::vector<T *>> m_Grid;
