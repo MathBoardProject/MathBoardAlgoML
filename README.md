@@ -7,7 +7,7 @@ Tested on Linux and Windows, but MacOS, and really any other OS with CMake, FFmp
     * Install CMake, Git, FFmpeg, VTK and OpenCV (different commands based on your distribution)
         * Fedora: `sudo dnf install cmake git ffmpeg vtk opencv opencv-devel tesseract tesseract-devel` and **Make SymEngine from source**
         * Arch: `sudo pacman -S --needed cmake git ffmpeg vtk opencv tesseract symengine`
-        * Ubuntu: `sudo apt install cmake git ffmpeg libopencv-dev tesseract-ocr libtesseract-dev libleptonica-dev tesseract-ocr-eng` and **Make SymEngine, from source**
+        * Ubuntu: `sudo apt install cmake git ffmpeg libopencv-dev tesseract-ocr libtesseract-dev libleptonica-dev tesseract-ocr-eng` and **Make SymEngine from source**
     * `git clone https://github.com/MathBoardProject/MathBoardAlgoML`
     * `cd MathBoardAlgoML`
     * `mkdir build`
