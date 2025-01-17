@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "../src/stroke.hpp"
 #define private public 
 #include "../src/grid.hpp"
 #undef private

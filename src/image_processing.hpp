@@ -30,8 +30,8 @@ cv::Mat BinarizeImage(const cv::Mat &input_mat);
 // Returns image string
 std::string RecognizeText(const cv::Mat &img);
 
-inline Grid<mathboard::Stroke>
-PlaceOnGrid(std::vector<mathboard::Stroke> &strokes) {
+Grid<mathboard::Stroke> inline PlaceOnGrid(
+    std::vector<mathboard::Stroke> &strokes) {
   // calculate boundaries of grid
   cv::Point2f bot_right_corner{0, 0};
   cv::Point2f top_left_corner{INFINITY, INFINITY};
@@ -53,18 +53,18 @@ PlaceOnGrid(std::vector<mathboard::Stroke> &strokes) {
     }
   }
 
-  // calculate avrage size of stroke
-  cv::Size2f avrage_stroke_size{0.0f, 0.0f};
+  // calculate average size of stroke
+  cv::Size2f average_stroke_size{0.0f, 0.0f};
   for (std::size_t i = 0; i < strokes.size(); i++) {
-    avrage_stroke_size.width += strokes[i].GetWidth();
-    avrage_stroke_size.height += strokes[i].GetHeight();
+    average_stroke_size.width += strokes[i].GetWidth();
+    average_stroke_size.height += strokes[i].GetHeight();
   }
-  avrage_stroke_size.width /= static_cast<float>(strokes.size());
-  avrage_stroke_size.height /= static_cast<float>(strokes.size());
+  average_stroke_size.width /= static_cast<float>(strokes.size());
+  average_stroke_size.height /= static_cast<float>(strokes.size());
 
   // create grid
   Grid<mathboard::Stroke> grid(top_left_corner, bot_right_corner,
-                               avrage_stroke_size);
+                               average_stroke_size);
   for (std::size_t i = 0; i < strokes.size(); i++) {
     grid.Insert(&strokes[i]);
   }

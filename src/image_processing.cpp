@@ -7,9 +7,6 @@
 // tesseract
 #include <tesseract/baseapi.h>
 
-// std
-#include <fstream>
-
 namespace mathboard {
 cv::Mat RasterizeImage(const std::filesystem::path &filename) {
   cv::Mat rasterized_image;

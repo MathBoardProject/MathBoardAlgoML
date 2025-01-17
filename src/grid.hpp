@@ -7,11 +7,8 @@
 #include <spdlog/spdlog.h>
 
 // std
-#include <concepts>
-#include <fstream>
 #include <list>
 #include <vector>
-#include <unordered_set>
 
 template <typename T> concept HasPosition = requires(T object) {
   object.GetPosition();
@@ -155,7 +152,9 @@ private:
   cv::Size2i m_CellSize{0, 0};
   // Number of unique objects inside Grid
   std::size_t m_Size{0};
+  // Number of rows in grid
   std::uint32_t m_Rows{0};
+  // Number of columns in grid
   std::uint32_t m_Columns{0};
   std::vector<std::vector<T *>> m_Grid;
 };

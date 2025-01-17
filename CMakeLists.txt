@@ -67,7 +67,6 @@ target_include_directories(${PROJECT_NAME}
 	PRIVATE ${OpenCV_INCLUDE_DIRS}
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_INCLUDE_DIRS}
-    PRIVATE ${Leptonica_INCLUDE_DIRS}
     PRIVATE ${SYMENGINE_INCLUDE_DIRS}
 )
 
@@ -76,8 +75,6 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE ${OpenCV_LIBS}
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_LIBRARIES}
-    PRIVATE ${Leptonica_LIBRARIES}
-    PRIVATE archive
     PRIVATE ${SYMENGINE_LIBRARIES}
 )
 
@@ -91,7 +88,6 @@ target_include_directories(${PROJECT_NAME}_lib
 	PRIVATE ${OpenCV_INCLUDE_DIRS}
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_INCLUDE_DIRS}
-    PRIVATE ${Leptonica_INCLUDE_DIRS}
     PRIVATE ${SYMENGINE_INCLUDE_DIRS}
 )
 
@@ -100,7 +96,6 @@ target_link_libraries(${PROJECT_NAME}_lib
 	PRIVATE ${OpenCV_LIBS}
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_LIBRARIES}
-    PRIVATE ${Leptonica_LIBRARIES}
     PRIVATE ${SYMENGINE_LIBRARIES}
 )
 
