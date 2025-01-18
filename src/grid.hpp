@@ -32,7 +32,7 @@ namespace mathboard {
 // The Grid class handles broad-phase intersection detection by dividing space
 // into cells, each containing potential object intersection. Grid as a class
 // doesn't own pointers to objects which stores.
-template <typename T> requires HasPosition<T> &&HasDimensions<T> class Grid {
+template <typename T> requires HasPosition<T> && HasDimensions<T> class Grid {
 public:
   // Constructor that sets up a grid covering a specified area,
   // defined by the top-left and bottom-right corners, with each cell having the
