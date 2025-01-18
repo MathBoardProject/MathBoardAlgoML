@@ -1,13 +1,18 @@
 # MathBoardAlgoML
 
 # Build
-Tested on Linux and Windows, but MacOS, and really any other OS with CMake, FFmpeg, VTK, OpenCV ports and C++20 compatible compiler, should work as well.
+Tested on Linux.
 
 * Linux (and other Unix systems like MacOS):
-    * Install CMake, Git, FFmpeg, VTK and OpenCV (different commands based on your distribution)
-        * Fedora: `sudo dnf install cmake git ffmpeg vtk opencv opencv-devel tesseract tesseract-devel` and **Make SymEngine from source**
-        * Arch: `sudo pacman -S --needed cmake git ffmpeg vtk opencv tesseract symengine`
-        * Ubuntu: `sudo apt install cmake git ffmpeg libopencv-dev tesseract-ocr` and **Make SymEngine from source**
+    * Install necessary packages (different commands based on your distribution)
+        * Fedora: 
+            * `sudo dnf install cmake git ffmpeg vtk opencv opencv-devel tesseract tesseract-devel spdlog spdlog-devel`
+            * **Make SymEngine from source**
+        * Arch:
+            * `sudo pacman -S --needed cmake git ffmpeg vtk opencv tesseract symengine spdlog`
+        * Ubuntu:
+            * `sudo apt install cmake git ffmpeg opencv tesseract spdlog`
+            * **Make SymEngine from source**
     * `git clone https://github.com/MathBoardProject/MathBoardAlgoML`
     * `cd MathBoardAlgoML`
     * `mkdir build`
