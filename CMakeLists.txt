@@ -33,6 +33,7 @@ file (GLOB_RECURSE TESTS CONFIGURE_DEPENDS "tests/*.cpp")
 # Check if OpenCV is installed
 find_package(OpenCV REQUIRED)
 find_package(Tesseract REQUIRED)
+find_package(Leptonica REQUIRED)
 find_package(SymEngine REQUIRED)
 
 # Fetch GoogleTest
@@ -106,6 +107,8 @@ add_executable(tests ${TESTS})
 target_link_libraries(tests
 	PRIVATE GTest::gtest_main
     PRIVATE ${PROJECT_NAME}_lib
+    PRIVATE ${OpenCV_LIBS}
+    PRIVATE spdlog::spdlog
 )
 
 include(GoogleTest)
