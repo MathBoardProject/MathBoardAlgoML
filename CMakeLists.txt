@@ -35,6 +35,7 @@ find_package(OpenCV REQUIRED)
 find_package(Tesseract REQUIRED)
 find_package(Leptonica REQUIRED)
 find_package(SymEngine REQUIRED)
+find_package(spdlog REQUIRED)
 
 # Fetch GoogleTest
 FetchContent_Declare(
@@ -44,14 +45,6 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-
-# Fetch spdlog
-FetchContent_Declare(
-      spdlog
-      GIT_REPOSITORY https://github.com/gabime/spdlog.git
-      GIT_TAG v1.15.0
-)
-FetchContent_MakeAvailable(spdlog)
 
 # Enable extra warnings
 enable_cxx_compiler_flag_if_supported("-Wall")
