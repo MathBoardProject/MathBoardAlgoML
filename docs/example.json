@@ -1,0 +1,18 @@
+{
+    "strokes": [
+        {
+            "id": 1,
+            "boardId": 1,
+            "path": "img.svg",
+            "x": 1,
+            "y": 1
+        },
+        {
+            "id": 2,
+            "boardId": 2,
+            "path": "img2.svg",
+            "x": 2,
+            "y": 2
+        }
+    ]
+}
