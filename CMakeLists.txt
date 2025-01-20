@@ -53,23 +53,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(spdlog)
 
-set(TENSORFLOW_SOURCE_DIR "/home/src/tensorflow_src" CACHE PATH
-  "Directory that contains the TensorFlow project" )
-if(NOT TENSORFLOW_SOURCE_DIR)
-  get_filename_component(TENSORFLOW_SOURCE_DIR
-    "${CMAKE_CURRENT_LIST_DIR}/../../src/tensorflow_src" ABSOLUTE)
-endif()
 
-add_subdirectory(
-  ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite
-  ${CMAKE_CURRENT_BINARY_DIR}/tensorflow-lite EXCLUDE_FROM_ALL)
+add_subdirectory(thirdparty/tensorflow)
 
 # Enable extra warnings
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
 enable_cxx_compiler_flag_if_supported("-pedantic")
-
-include_directories("/home/src/tensorflow_src/tensorflow/lite")
 
 # Add project binary
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
