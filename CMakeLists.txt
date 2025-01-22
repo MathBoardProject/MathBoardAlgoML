@@ -112,6 +112,7 @@ add_executable(tests ${TESTS})
 target_link_libraries(tests
 	PRIVATE GTest::gtest_main
     PRIVATE ${PROJECT_NAME}_lib
+    PRIVATE ${OpenCV_LIBS}
 )
 
 include(GoogleTest)
