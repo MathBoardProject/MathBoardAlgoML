@@ -20,7 +20,6 @@ Model::Model(const std::filesystem::path &model_filename) {
   }
   tflite::ops::builtin::BuiltinOpResolver resolver;
   tflite::InterpreterBuilder builder(*m_Model, resolver);
-  std::unique_ptr<tflite::Interpreter> interpreter;
   builder(&m_Interpreter);
   if (m_Interpreter == nullptr) {
     spdlog::error("[Model::Model]: Interpreter loading failure\n");
