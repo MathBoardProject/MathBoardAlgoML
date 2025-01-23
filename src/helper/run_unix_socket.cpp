@@ -4,8 +4,9 @@
 // local
 #include "../unix_socket_server/unix_socket_server.hpp"
 
-// std
-#include <iostream>
+// libs
+// spdlog
+#include <spdlog/spdlog.h>
 
 namespace mathboard {
 
@@ -15,13 +16,14 @@ bool runUnixSocket() {
   bool running = true;
 
   if (!server->Init("socket.sock")) {
-    std::cerr << "Failed to initialize the Unix Socket Server" << std::endl;
+    spdlog::error(
+        "[runUnixSocket] - Failed to initialize the Unix Socket Server.\n");
     return false;
   }
 
   server->Listen();
 
-  std::cout << "Server is listening" << std::endl;
+  spdlog::info("[runUnixSocket] - Server is listening.\n");
 
   void *client_addr;
   int client_fd;
@@ -29,7 +31,7 @@ bool runUnixSocket() {
   // Loop to handle request
   while (running) {
     if (server->Accept(client_fd, &client_addr)) {
-      std::cout << "Client connected!" << std::endl;
+      spdlog::info("[runUnixSocket] - Client connected.\n");
 
       // Message reading and response
       std::vector<unsigned char> buffer(256);
@@ -39,19 +41,23 @@ bool runUnixSocket() {
       if (buffer.size() > 0) {
         std::string message = std::string(buffer.begin(), buffer.end());
 
-        std::cout << "Data received from the client: " << message << std::endl;
+        spdlog::info("[runUnixSocket] - Data received from the client: {}\n",
+                     message);
 
         if (server->WriteString(client_fd, "Data received on the CPP!")) {
-          std::cout << "Response send!" << std::endl;
+          spdlog::info("[runUnixSocket] - Response send.\n");
+
         } else {
-          std::cerr << "Failed to send response to the client" << std::endl;
+          spdlog::error(
+              "[runUnixSocket] - Failed to send response to the client.\n");
         }
       } else {
-        std::cerr << "Failed to read message from the client" << std::endl;
+        spdlog::error(
+            "[runUnixSocket] - Failed to read message from the client.\n");
       }
 
     } else {
-      std::cerr << "Failed to accept the connection" << std::endl;
+      spdlog::error("[runUnixSocket] - Failed to accept the connection.\n");
     }
   }
 

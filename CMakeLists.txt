@@ -35,6 +35,7 @@ find_package(OpenCV REQUIRED)
 find_package(Tesseract REQUIRED)
 find_package(Leptonica REQUIRED)
 find_package(SymEngine REQUIRED)
+find_package(spdlog REQUIRED)
 
 # Fetch GoogleTest
 FetchContent_Declare(
@@ -45,13 +46,12 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Fetch spdlog
+# Fetch nlohmann/json
 FetchContent_Declare(
-      spdlog
-      GIT_REPOSITORY https://github.com/gabime/spdlog.git
-      GIT_TAG v1.15.0
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
-FetchContent_MakeAvailable(spdlog)
+FetchContent_MakeAvailable(json)
 
 
 add_subdirectory(thirdparty/tensorflow)
@@ -60,6 +60,7 @@ add_subdirectory(thirdparty/tensorflow)
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
 enable_cxx_compiler_flag_if_supported("-pedantic")
+
 
 # Add project binary
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
@@ -71,6 +72,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_INCLUDE_DIRS}
     PRIVATE ${SYMENGINE_INCLUDE_DIRS}
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 # Add libraries to link
@@ -80,6 +82,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE ${Tesseract_LIBRARIES}
     PRIVATE ${SYMENGINE_LIBRARIES}
     PRIVATE tensorflow-lite
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 
@@ -93,6 +96,7 @@ target_include_directories(${PROJECT_NAME}_lib
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_INCLUDE_DIRS}
     PRIVATE ${SYMENGINE_INCLUDE_DIRS}
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 # Add libraries to link
@@ -102,6 +106,7 @@ target_link_libraries(${PROJECT_NAME}_lib
     PRIVATE ${Tesseract_LIBRARIES}
     PRIVATE ${SYMENGINE_LIBRARIES}
     PRIVATE tensorflow-lite
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 
@@ -113,7 +118,6 @@ target_link_libraries(tests
 	PRIVATE GTest::gtest_main
     PRIVATE ${PROJECT_NAME}_lib
     PRIVATE ${OpenCV_LIBS}
-    PRIVATE spdlog::spdlog
 )
 
 include(GoogleTest)
