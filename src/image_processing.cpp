@@ -3,6 +3,8 @@
 
 // libs
 // spdlog
+#include <opencv2/core/hal/interface.h>
+#include <opencv2/imgproc.hpp>
 #include <spdlog/spdlog.h>
 // tesseract
 #include <tesseract/baseapi.h>
@@ -29,12 +31,20 @@ cv::Mat RasterizeImage(const std::filesystem::path &filename) {
   return rasterized_image;
 }
 
-cv::Mat CropImageToSymbol(const cv::Mat &input_mat) {
+cv::Mat CropToSymbol(const cv::Mat &input_mat) {
+  if (input_mat.channels() != 1) {
+    spdlog::error("[CropToSymbol]: input_mat isn't grayscale");
+  }
+  cv::Mat cropped_mat = input_mat;
+  if (input_mat.type() != CV_8UC1) {
+    double min_val = 0.0f;
+    double max_val = 0.0f;
+    cv::minMaxLoc(input_mat, &min_val, &max_val);
+    input_mat.convertTo(cropped_mat, CV_8UC1, (max_val - min_val),
+                        -min_val * 255.0 / (max_val - min_val));
+  }
   std::vector<std::vector<cv::Point>> contours;
-  // merges bounding boxes of all objects on image
-  // into one bigger bounding box containing all
-  // content of image
-  cv::findContours(input_mat, contours, cv::RETR_CCOMP,
+  cv::findContours(cropped_mat, contours, cv::RETR_CCOMP,
                    cv::CHAIN_APPROX_SIMPLE);
   cv::Rect bounding_box;
   for (std::size_t i = 0; i < contours.size(); i++) {
@@ -76,4 +86,37 @@ std::string RecognizeText(const cv::Mat &img) {
   return text;
 }
 
+cv::Mat CombineStrokes(const std::vector<mathboard::Stroke *> &strokes) {
+  cv::Point2i top_left_corner = cv::Point2i(INT32_MAX, INT32_MAX);
+  cv::Point2i bot_right_corner = cv::Point2i(INT32_MIN, INT32_MIN);
+  for (const auto &stroke : strokes) {
+    const cv::Point2i stroke_top_left_corner = stroke->GetPosition();
+    const cv::Point2i stroke_bot_right_corner =
+        cv::Point2i(stroke->GetPosition().x + stroke->GetSize().width,
+                    stroke->GetPosition().y + stroke->GetSize().height);
+
+    if (stroke_top_left_corner.x < top_left_corner.x) {
+      top_left_corner.x = stroke_top_left_corner.x;
+    }
+    if (stroke_top_left_corner.y < top_left_corner.y) {
+      top_left_corner.y = stroke_top_left_corner.y;
+    }
+    if (stroke_bot_right_corner.x > bot_right_corner.x) {
+      bot_right_corner.x = stroke_bot_right_corner.x;
+    }
+    if (stroke_bot_right_corner.y > bot_right_corner.y) {
+      bot_right_corner.y = stroke_bot_right_corner.y;
+    }
+  }
+  cv::Mat symbol =
+      cv::Mat::zeros(bot_right_corner.y - top_left_corner.y,
+                     bot_right_corner.x - top_left_corner.x, CV_32F);
+  for (auto &stroke : strokes) {
+    cv::Point offset = stroke->GetPosition() - top_left_corner;
+    cv::Rect roi(offset, stroke->GetSize());
+    cv::Mat symbol_roi = symbol(roi);
+    cv::max(symbol_roi, stroke->GetMatrix(), symbol_roi);
+  }
+  return symbol;
+}
 } // namespace mathboard
