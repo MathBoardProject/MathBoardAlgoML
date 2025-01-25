@@ -3,7 +3,6 @@
 
 // lib
 // spdlog
-#include <opencv2/core/hal/interface.h>
 #include <spdlog/spdlog.h>
 
 namespace mathboard {

@@ -1,8 +1,8 @@
 #pragma once
 
-// lib
+// libs
 // opencv
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/types.hpp>
 // spdlog
 #include <spdlog/spdlog.h>
 

@@ -1,8 +1,5 @@
 #pragma once
 
-// local
-#include "common.hpp"
-
 // lib
 // OpenCV
 #include <opencv2/opencv.hpp>
@@ -10,7 +7,7 @@
 // std
 #include <cstdint>
 #include <mutex>
-#include <vector>
+#include <filesystem>
 
 namespace mathboard {
 

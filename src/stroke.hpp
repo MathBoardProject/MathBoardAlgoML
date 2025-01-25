@@ -1,9 +1,7 @@
 #pragma once
 
-// lib
+// libs
 // OpenCV
-#include <opencv2/core/mat.hpp>
-#include <opencv2/core/types.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace mathboard {

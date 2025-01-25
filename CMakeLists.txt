@@ -53,6 +53,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
+# Build tensorflow library
+add_subdirectory(thirdparty/tensorflow)
+
 # Enable extra warnings
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
@@ -78,6 +81,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_LIBRARIES}
     PRIVATE ${SYMENGINE_LIBRARIES}
+    PRIVATE tensorflow-lite
     PRIVATE nlohmann_json::nlohmann_json
 )
 
@@ -101,6 +105,7 @@ target_link_libraries(${PROJECT_NAME}_lib
     PRIVATE spdlog::spdlog
     PRIVATE ${Tesseract_LIBRARIES}
     PRIVATE ${SYMENGINE_LIBRARIES}
+    PRIVATE tensorflow-lite
     PRIVATE nlohmann_json::nlohmann_json
 )
 

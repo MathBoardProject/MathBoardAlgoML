@@ -3,7 +3,6 @@
 #include "stroke.hpp"
 
 // opencv
-#include <opencv2/core/types.hpp>
 #include <opencv2/opencv.hpp>
 
 // std
@@ -18,10 +17,6 @@ cv::Mat RasterizeImage(const std::filesystem::path &filename);
 // crop image to tightly fit symbol on it
 cv::Mat CropToSymbol(const cv::Mat &input_mat);
 
-// returns instance of Grid class with all images put on
-// their positions ready to further interpreatation
-// it sets grid cell size and boundaries of it
-// automaticaly
 // Return grascaled version of input image
 cv::Mat GrayScaleImage(const cv::Mat &input_mat);
 
@@ -57,6 +52,10 @@ GenerateCombinations(const std::vector<T> &elements) {
   return all_combinations;
 }
 
+// returns instance of Grid class with all images put on
+// their positions ready to further interpreatation
+// it sets grid cell size and boundaries of it
+// automaticaly
 Grid<mathboard::Stroke> inline PlaceOnGrid(
     std::vector<mathboard::Stroke> &strokes) {
   // calculate boundaries of grid
