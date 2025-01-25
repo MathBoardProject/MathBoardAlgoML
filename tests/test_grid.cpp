@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <opencv2/core/types.hpp>
 #define private public 
 #include "../src/grid.hpp"
 #undef private
@@ -21,8 +22,7 @@ public:
   }
 
   cv::Point2f GetPosition() const {return m_Position;}
-  int GetWidth() const {return m_Size.width;}
-  int GetHeight() const {return m_Size.height;}
+  cv::Size2i GetSize() const { return m_Size; }
   int GetIndex() const {return m_Index;}
 private:
   int m_Index{0};
@@ -57,9 +57,9 @@ TEST_F(GridTest, Insert) {
   // calculates shape position on grid
   const cv::Point2i top_left_corner_grid = 
     cv::Point2i(s0.GetPosition().x / grid.m_CellSize.width, s0.GetPosition().y / grid.m_CellSize.height);
-  const cv::Point2i bot_right_corner_grid = 
-    cv::Point2i( (s0.GetPosition().x + s0.GetWidth()) / grid.m_CellSize.width,
-    (s0.GetPosition().y + s0.GetHeight()) / grid.m_CellSize.height);  
+  const cv::Point2i bot_right_corner_grid = cv::Point2i(
+      (s0.GetPosition().x + s0.GetSize().width) / grid.m_CellSize.width,
+      (s0.GetPosition().y + s0.GetSize().height) / grid.m_CellSize.height);
   EXPECT_FALSE(grid.m_Grid[top_left_corner_grid.x + grid.m_Columns * top_left_corner_grid.y].empty());
   EXPECT_FALSE(grid.m_Grid[top_left_corner_grid.x + grid.m_Columns * bot_right_corner_grid.y].empty());
   EXPECT_FALSE(grid.m_Grid[bot_right_corner_grid.x + grid.m_Columns * bot_right_corner_grid.y].empty());

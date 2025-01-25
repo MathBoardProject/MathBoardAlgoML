@@ -2,6 +2,8 @@
 
 // lib
 // OpenCV
+#include <opencv2/core/mat.hpp>
+#include <opencv2/core/types.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace mathboard {
@@ -10,20 +12,21 @@ namespace mathboard {
 class Stroke {
 public:
   Stroke() = default;
-  Stroke(int index, float pos_x, float pos_y, cv::Mat grayscale_image);
-  Stroke(int index, cv::Point2f position, cv::Mat grayscale_image);
+  Stroke(int index, int pos_x, int pos_y, cv::Mat grayscale_image);
+  Stroke(int index, cv::Point2i position, cv::Mat grayscale_image);
 
 public:
-  cv::Point2f GetPosition() const { return m_Position; }
-  cv::Rect GetBoundingBox() const { return m_BoundingBox; }
-  int GetWidth() const { return m_BoundingBox.height; }
-  int GetHeight() const { return m_BoundingBox.width; }
-  std::vector<std::vector<cv::Point>> GetContours() const { return m_Contours; }
+  cv::Point2i GetPosition() const { return m_Position; }
   std::uint32_t GetIndex() const { return m_Index; }
+  cv::Mat GetMatrix() const { return m_Matrix; }
+  cv::Size2i GetSize() const { return m_Matrix.size(); }
+  cv::Rect2i GetBoundingBox() const {
+    return cv::Rect2i(GetPosition(), GetSize());
+  }
+
 private:
   std::uint32_t m_Index{0};
-  cv::Point2f m_Position;
-  std::vector<std::vector<cv::Point>> m_Contours;
-  cv::Rect m_BoundingBox;
+  cv::Point2i m_Position{0, 0};
+  cv::Mat m_Matrix;
 };
 } // namespace mathboard

@@ -14,16 +14,15 @@ template <typename T> concept HasPosition = requires(T object) {
   object.GetPosition();
 };
 
-template <typename T> concept HasDimensions = requires(T object) {
-  object.GetWidth();
-  object.GetHeight();
+template <typename T> concept HasSize = requires(T object) {
+  object.GetSize();
 };
 
-struct Position2f {
-  float x;
-  float y;
+struct Pos2i {
+  int x;
+  int y;
 };
-struct BoundingBox {
+struct Size2i {
   int width;
   int height;
 };
@@ -32,7 +31,7 @@ namespace mathboard {
 // The Grid class handles broad-phase intersection detection by dividing space
 // into cells, each containing potential object intersection. Grid as a class
 // doesn't own pointers to objects which stores.
-template <typename T> requires HasPosition<T> && HasDimensions<T> class Grid {
+template <typename T> requires HasPosition<T> &&HasSize<T> class Grid {
 public:
   // Constructor that sets up a grid covering a specified area,
   // defined by the top-left and bottom-right corners, with each cell having the
@@ -55,13 +54,11 @@ public:
 
   // Insert object to grid.
   void Insert(T *object) {
-    const Position2f pos =
-        Position2f{object->GetPosition().x, object->GetPosition().y};
-    Position2f object_min = pos;
-    const BoundingBox bounding_box =
-        BoundingBox{object->GetWidth(), object->GetHeight()};
-    Position2f object_max =
-        Position2f{pos.x + bounding_box.width, pos.y + bounding_box.height};
+    const Pos2i pos = Pos2i(object->GetPosition().x, object->GetPosition().y);
+    const Size2i size =
+        Size2i(object->GetSize().width, object->GetSize().height);
+    Pos2i object_min = pos;
+    Pos2i object_max = Pos2i(pos.x + size.width, pos.y + size.height);
 
     // calculating position of vertices in grid
     // decrese width and height because containers are 0 index based
