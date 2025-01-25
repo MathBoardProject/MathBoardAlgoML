@@ -9,7 +9,7 @@ Tested on Linux.
             * `sudo dnf install cmake git ffmpeg vtk opencv opencv-devel tesseract tesseract-devel spdlog spdlog-devel`
             * **Make SymEngine from source**
         * Arch:
-            * `sudo pacman -S --needed cmake git ffmpeg vtk opencv tesseract symengine spdlog`
+            * `sudo pacman -S --needed cmake git ffmpeg vtk opencv tesseract tesseract-data-eng symengine spdlog`
         * Ubuntu:
             * `sudo apt install cmake git ffmpeg opencv tesseract spdlog`
             * **Make SymEngine from source**
