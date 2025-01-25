@@ -2,9 +2,6 @@
 #include "grid.hpp"
 #include "stroke.hpp"
 
-// opencv
-#include <opencv2/opencv.hpp>
-
 // std
 #include <filesystem>
 
@@ -17,10 +14,6 @@ cv::Mat RasterizeImage(const std::filesystem::path &filename);
 // crop image to tightly fit symbol on it
 cv::Mat CropImageToSymbol(const cv::Mat &input_mat);
 
-// returns instance of Grid class with all images put on
-// their positions ready to further interpreatation
-// it sets grid cell size and boundaries of it
-// automaticaly
 // Return grascaled version of input image
 cv::Mat GrayScaleImage(const cv::Mat &input_mat);
 
@@ -30,6 +23,10 @@ cv::Mat BinarizeImage(const cv::Mat &input_mat);
 // Returns image string
 std::string RecognizeText(const cv::Mat &img);
 
+// returns instance of Grid class with all images put on
+// their positions ready to further interpreatation
+// it sets grid cell size and boundaries of it
+// automaticaly
 Grid<mathboard::Stroke> inline PlaceOnGrid(
     std::vector<mathboard::Stroke> &strokes) {
   // calculate boundaries of grid

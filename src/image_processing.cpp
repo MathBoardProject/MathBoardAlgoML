@@ -2,6 +2,10 @@
 #include "image_processing.hpp"
 
 // libs
+// opencv
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 // spdlog
 #include <spdlog/spdlog.h>
 // tesseract

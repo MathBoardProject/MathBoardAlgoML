@@ -3,4 +3,4 @@ build/
 .vs/
 CMakeUserPresets.json
 .clang-format
-
+/thirdparty/tensorflow/tensorflow_src

@@ -1,12 +1,13 @@
 // header
 #include "stroke.hpp"
 
-// lib
-// spdlog
+// libs
+//opencv
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgproc.hpp>
+//spdlog
 #include <spdlog/spdlog.h>
 
-// std
-#include <fstream>
 
 namespace mathboard {
 Stroke::Stroke(int index, float pos_x, float pos_y, cv::Mat grayscale_image)

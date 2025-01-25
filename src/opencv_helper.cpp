@@ -7,7 +7,6 @@
 
 // std
 #include <filesystem>
-#include <fstream>
 
 namespace mathboard {
 
