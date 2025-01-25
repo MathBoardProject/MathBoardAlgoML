@@ -53,7 +53,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
-
+# Build tensorflow library
 add_subdirectory(thirdparty/tensorflow)
 
 # Enable extra warnings
