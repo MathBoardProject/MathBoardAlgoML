@@ -9,16 +9,18 @@ include(CTest)
 include(CheckCXXCompilerFlag)
 include(FetchContent)
 
+list(APPEND CMAKE_PREFIX_PATH tesseract)
+
 # Enable flag if supported
 function(enable_cxx_compiler_flag_if_supported flag)
-    string(FIND "${CMAKE_CXX_FLAGS}" "${flag}" flag_already_set)
-    if(flag_already_set EQUAL -1)
-        check_cxx_compiler_flag("${flag}" flag_supported)
-        if(flag_supported)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
-        endif()
-        unset(flag_supported CACHE)
+  string(FIND "${CMAKE_CXX_FLAGS}" "${flag}" flag_already_set)
+  if(flag_already_set EQUAL -1)
+    check_cxx_compiler_flag("${flag}" flag_supported)
+    if(flag_supported)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
     endif()
+    unset(flag_supported CACHE)
+  endif()
 endfunction()
 
 # Set C++ standard
@@ -26,9 +28,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Gather source and header files
-file (GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-file (GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "src/*.hpp")
-file (GLOB_RECURSE TESTS CONFIGURE_DEPENDS "tests/*.cpp")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "src/*.hpp")
+file(GLOB_RECURSE TESTS CONFIGURE_DEPENDS "tests/*.cpp")
 
 # Check if OpenCV is installed
 find_package(OpenCV REQUIRED)
@@ -67,22 +69,24 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Add include directories
 target_include_directories(${PROJECT_NAME}
-	PRIVATE src
-	PRIVATE ${OpenCV_INCLUDE_DIRS}
-    PRIVATE spdlog::spdlog
-    PRIVATE ${Tesseract_INCLUDE_DIRS}
-    PRIVATE ${SYMENGINE_INCLUDE_DIRS}
-    PRIVATE nlohmann_json::nlohmann_json
+  PRIVATE
+    src
+    ${OpenCV_INCLUDE_DIRS}
+    spdlog::spdlog
+    ${Tesseract_INCLUDE_DIRS}
+    ${SYMENGINE_INCLUDE_DIRS}
+    nlohmann_json::nlohmann_json
 )
 
 # Add libraries to link
 target_link_libraries(${PROJECT_NAME}
-	PRIVATE ${OpenCV_LIBS}
-    PRIVATE spdlog::spdlog
-    PRIVATE ${Tesseract_LIBRARIES}
-    PRIVATE ${SYMENGINE_LIBRARIES}
-    PRIVATE tensorflow-lite
-    PRIVATE nlohmann_json::nlohmann_json
+  PRIVATE
+    ${OpenCV_LIBS}
+    spdlog::spdlog
+    ${Tesseract_LIBRARIES}
+    ${SYMENGINE_LIBRARIES}
+    tensorflow-lite
+    nlohmann_json::nlohmann_json
 )
 
 
@@ -91,22 +95,24 @@ add_library(${PROJECT_NAME}_lib STATIC ${SOURCES} ${HEADERS})
 
 # Add include directories
 target_include_directories(${PROJECT_NAME}_lib
-	PRIVATE src
-	PRIVATE ${OpenCV_INCLUDE_DIRS}
-    PRIVATE spdlog::spdlog
-    PRIVATE ${Tesseract_INCLUDE_DIRS}
-    PRIVATE ${SYMENGINE_INCLUDE_DIRS}
-    PRIVATE nlohmann_json::nlohmann_json
+  PRIVATE
+    src
+    ${OpenCV_INCLUDE_DIRS}
+    spdlog::spdlog
+    ${Tesseract_INCLUDE_DIRS}
+    ${SYMENGINE_INCLUDE_DIRS}
+    nlohmann_json::nlohmann_json
 )
 
 # Add libraries to link
 target_link_libraries(${PROJECT_NAME}_lib
-	PRIVATE ${OpenCV_LIBS}
-    PRIVATE spdlog::spdlog
-    PRIVATE ${Tesseract_LIBRARIES}
-    PRIVATE ${SYMENGINE_LIBRARIES}
-    PRIVATE tensorflow-lite
-    PRIVATE nlohmann_json::nlohmann_json
+  PRIVATE
+    ${OpenCV_LIBS}
+    spdlog::spdlog
+    ${Tesseract_LIBRARIES}
+    ${SYMENGINE_LIBRARIES}
+    tensorflow-lite
+    nlohmann_json::nlohmann_json
 )
 
 
@@ -115,9 +121,10 @@ add_executable(tests ${TESTS})
 
 # Link GoogleTest and MathBoard library
 target_link_libraries(tests
-	PRIVATE GTest::gtest_main
-    PRIVATE ${PROJECT_NAME}_lib
-    PRIVATE ${OpenCV_LIBS}
+  PRIVATE
+    GTest::gtest_main
+    ${PROJECT_NAME}_lib
+    ${OpenCV_LIBS}
 )
 
 include(GoogleTest)
