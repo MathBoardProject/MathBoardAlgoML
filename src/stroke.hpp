@@ -2,7 +2,8 @@
 
 // libs
 // OpenCV
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/core/types.hpp>
 
 namespace mathboard {
 
@@ -10,8 +11,10 @@ namespace mathboard {
 class Stroke {
 public:
   Stroke() = default;
-  Stroke(int index, int pos_x, int pos_y, cv::Mat grayscale_image);
-  Stroke(int index, cv::Point2i position, cv::Mat grayscale_image);
+  Stroke(int index, int pos_x, int pos_y, cv::Mat grayscale_image,
+         double scale_factor = 1.0 / 255.0);
+  Stroke(int index, cv::Point2i position, cv::Mat grayscale_image,
+         double scale_factor = 1.0 / 255.0);
 
 public:
   cv::Point2i GetPosition() const { return m_Position; }

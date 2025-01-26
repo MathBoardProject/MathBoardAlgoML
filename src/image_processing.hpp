@@ -1,9 +1,11 @@
+#pragma once
+
 // local
 #include "grid.hpp"
 #include "stroke.hpp"
 
 // opencv
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 
 // std
 #include <filesystem>
@@ -28,6 +30,8 @@ std::string RecognizeText(const cv::Mat &img);
 
 // Combine all given strokes into a single matrix.
 cv::Mat CombineStrokes(const std::vector<mathboard::Stroke *> &strokes);
+
+cv::Mat ResizeToMNISTFormat(const cv::Mat &input_mat);
 
 // Generate all possible combinations of elements from the container,
 // regardless of order.

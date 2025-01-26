@@ -1,14 +1,13 @@
-// local
+// header
 #include "image_processing.hpp"
 
 // libs
 // opencv
-#include <opencv2/core/mat.hpp>
+#include <opencv2/core/hal/interface.h>
+#include <opencv2/core/types.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio.hpp>
 // spdlog
-#include <opencv2/core/hal/interface.h>
-#include <opencv2/imgproc.hpp>
 #include <spdlog/spdlog.h>
 // tesseract
 #include <tesseract/baseapi.h>
@@ -39,13 +38,15 @@ cv::Mat CropToSymbol(const cv::Mat &input_mat) {
   if (input_mat.channels() != 1) {
     spdlog::error("[CropToSymbol]: input_mat isn't grayscale");
   }
-  cv::Mat cropped_mat = input_mat;
+  cv::Mat cropped_mat;
+  input_mat.copyTo(cropped_mat);
   if (input_mat.type() != CV_8UC1) {
+    cropped_mat *= 255.0;
     double min_val = 0.0f;
     double max_val = 0.0f;
-    cv::minMaxLoc(input_mat, &min_val, &max_val);
-    input_mat.convertTo(cropped_mat, CV_8UC1, (max_val - min_val),
-                        -min_val * 255.0 / (max_val - min_val));
+    cv::minMaxLoc(cropped_mat, &min_val, &max_val);
+    cropped_mat.convertTo(cropped_mat, CV_8UC1, (max_val - min_val),
+                          -min_val * 255.0 / (max_val - min_val));
   }
   std::vector<std::vector<cv::Point>> contours;
   cv::findContours(cropped_mat, contours, cv::RETR_CCOMP,
@@ -122,5 +123,11 @@ cv::Mat CombineStrokes(const std::vector<mathboard::Stroke *> &strokes) {
     cv::max(symbol_roi, stroke->GetMatrix(), symbol_roi);
   }
   return symbol;
+}
+
+cv::Mat ResizeToMNISTFormat(const cv::Mat &input_mat) {
+  cv::Mat output_mat;
+  cv::resize(input_mat, output_mat, cv::Size2i(28, 28), 0, 0, cv::INTER_CUBIC);
+  return output_mat;
 }
 } // namespace mathboard
