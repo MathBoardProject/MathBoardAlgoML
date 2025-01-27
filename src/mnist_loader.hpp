@@ -1,5 +1,6 @@
 #pragma once
 
+// std
 #include <cstdint>
 #include <fstream>
 #include <string>
@@ -7,6 +8,7 @@
 
 namespace mathboard {
 namespace mnistLoader {
+
 uint32_t readBigEndian(std::fstream &stream);
 
 struct MNISTData {
@@ -15,5 +17,6 @@ struct MNISTData {
 };
 
 MNISTData loadMNIST(const std::string &filename);
+
 } // namespace mnistLoader
 } // namespace mathboard

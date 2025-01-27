@@ -12,6 +12,7 @@
 #include <tesseract/baseapi.h>
 
 namespace mathboard {
+
 cv::Mat RasterizeImage(const std::filesystem::path &filename) {
   cv::Mat rasterized_image;
   if (filename.extension() != ".svg") {

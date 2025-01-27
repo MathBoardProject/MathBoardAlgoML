@@ -13,6 +13,7 @@
 #include <vector>
 
 namespace mathboard {
+
 Model::Model(const std::filesystem::path &model_filename) {
   m_Model = tflite::FlatBufferModel::BuildFromFile(model_filename.c_str());
   if (m_Model == nullptr) {
@@ -50,4 +51,5 @@ uint32_t Model::Predict(cv::Mat character) const {
       &top_results, kTfLiteFloat32);
   return top_results.front().second;
 }
+
 } // namespace mathboard

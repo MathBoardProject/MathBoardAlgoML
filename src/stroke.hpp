@@ -3,6 +3,7 @@
 // libs
 // OpenCV
 #include <opencv2/core/types.hpp>
+
 namespace mathboard {
 
 // class holding basic information about image of stroke
@@ -25,4 +26,5 @@ private:
   std::vector<std::vector<cv::Point>> m_Contours;
   cv::Rect m_BoundingBox;
 };
+
 } // namespace mathboard
