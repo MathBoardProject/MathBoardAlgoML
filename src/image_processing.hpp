@@ -6,6 +6,7 @@
 #include <filesystem>
 
 namespace mathboard {
+
 // take path to svg file and transform it into pixel representation using
 // cv::Mat
 cv::Mat RasterizeImage(const std::filesystem::path &filename);

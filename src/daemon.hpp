@@ -39,7 +39,7 @@ FORMAT:
 ```
 */
 
-void Daemon() {
+inline void Daemon() {
   std::unique_ptr<UnixSocketServer> server(UnixSocketServer::Instance());
   OpenCVHelper opencvHelper{};
 

@@ -1,11 +1,16 @@
+// header
 #include "mnist_loader.hpp"
+
+// libs
+// spdlog
+#include <spdlog/spdlog.h>
+
+// std
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <spdlog/spdlog.h>
-
 
 namespace mathboard {
 namespace mnistLoader {
@@ -52,5 +57,6 @@ MNISTData loadMNIST(const std::string &filename) {
 
   return data;
 }
+
 } // namespace mnistLoader
 } // namespace mathboard

@@ -5,9 +5,6 @@
 // spdlog
 #include <spdlog/spdlog.h>
 
-// std
-#include <fstream>
-
 namespace mathboard {
 
 bool LinuxUnixSocketServer::Init(const std::filesystem::path &socket_path) {
@@ -31,7 +28,7 @@ bool LinuxUnixSocketServer::Init(const std::filesystem::path &socket_path) {
   strcpy(serv_addr.sun_path, m_SocketPath.c_str());
 
   // Bind the address to the socket
-  if (bind(m_SocketServFd, (sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+  if (bind(m_SocketServFd, reinterpret_cast<sockaddr *>(&serv_addr), sizeof(serv_addr)) < 0) {
     spdlog::error(
         "[LinuxUnixSocketServer::Init]: Could not bind the address to the "
         "socket.\n");

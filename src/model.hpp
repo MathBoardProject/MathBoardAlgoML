@@ -8,9 +8,6 @@
 #include <filesystem>
 #include <opencv2/core/mat.hpp>
 
-// std
-#include <memory>
-
 namespace mathboard {
 
 class Model {
@@ -22,4 +19,5 @@ private:
   std::unique_ptr<tflite::FlatBufferModel> m_Model{nullptr};
   std::unique_ptr<tflite::Interpreter> m_Interpreter{nullptr};
 };
+
 } // namespace mathboard

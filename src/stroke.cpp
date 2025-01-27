@@ -8,8 +8,8 @@
 //spdlog
 #include <spdlog/spdlog.h>
 
-
 namespace mathboard {
+
 Stroke::Stroke(int index, float pos_x, float pos_y, cv::Mat grayscale_image)
     : m_Index(index), m_Position(cv::Point2f{pos_x, pos_y}) {
   if (grayscale_image.channels() != 1) {
