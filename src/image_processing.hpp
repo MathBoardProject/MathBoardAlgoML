@@ -9,6 +9,7 @@
 
 // std
 #include <filesystem>
+#include <vector>
 
 namespace mathboard {
 // take path to svg file and transform it into pixel representation using
@@ -29,9 +30,13 @@ cv::Mat BinarizeImage(const cv::Mat &input_mat);
 std::string RecognizeText(const cv::Mat &img);
 
 // Combine all given strokes into a single matrix.
-cv::Mat CombineStrokes(const std::vector<mathboard::Stroke *> &strokes);
+cv::Mat CombineStrokes(const std::vector<mathboard::Stroke> &strokes);
 
 cv::Mat ResizeToMNISTFormat(const cv::Mat &input_mat);
+
+std::vector<mathboard::Stroke>
+FindIntersectingStrokes(const mathboard::Stroke &target_stroke,
+                        const std::vector<mathboard::Stroke> &strokes);
 
 // Generate all possible combinations of elements from the container,
 // regardless of order.
@@ -39,8 +44,7 @@ cv::Mat ResizeToMNISTFormat(const cv::Mat &input_mat);
 template <typename T>
 std::vector<std::vector<T>>
 GenerateCombinations(const std::vector<T> &elements) {
-  // Total combinations = 2^n
-  const std::size_t total = 1 << elements.size();
+  const std::size_t total = std::pow(2, elements.size());
 
   std::vector<std::vector<T>> all_combinations;
   all_combinations.resize(total - 1);

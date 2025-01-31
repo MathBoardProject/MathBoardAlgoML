@@ -24,7 +24,7 @@ public:
   // - It must have a data type of CV_32F
   // If the matrix represents a digit that is too narrow, the prediction may be
   // inaccurate.
-  uint32_t Predict(cv::Mat input_mat) const;
+  std::pair<float, int> Predict(cv::Mat input_mat) const;
 
 private:
   std::unique_ptr<tflite::FlatBufferModel> m_Model{nullptr};

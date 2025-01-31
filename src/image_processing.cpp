@@ -91,14 +91,14 @@ std::string RecognizeText(const cv::Mat &img) {
   return text;
 }
 
-cv::Mat CombineStrokes(const std::vector<mathboard::Stroke *> &strokes) {
+cv::Mat CombineStrokes(const std::vector<mathboard::Stroke> &strokes) {
   cv::Point2i top_left_corner = cv::Point2i(INT32_MAX, INT32_MAX);
   cv::Point2i bot_right_corner = cv::Point2i(INT32_MIN, INT32_MIN);
   for (const auto &stroke : strokes) {
-    const cv::Point2i stroke_top_left_corner = stroke->GetPosition();
+    const cv::Point2i stroke_top_left_corner = stroke.GetPosition();
     const cv::Point2i stroke_bot_right_corner =
-        cv::Point2i(stroke->GetPosition().x + stroke->GetSize().width,
-                    stroke->GetPosition().y + stroke->GetSize().height);
+        cv::Point2i(stroke.GetPosition().x + stroke.GetSize().width,
+                    stroke.GetPosition().y + stroke.GetSize().height);
 
     if (stroke_top_left_corner.x < top_left_corner.x) {
       top_left_corner.x = stroke_top_left_corner.x;
@@ -117,10 +117,10 @@ cv::Mat CombineStrokes(const std::vector<mathboard::Stroke *> &strokes) {
       cv::Mat::zeros(bot_right_corner.y - top_left_corner.y,
                      bot_right_corner.x - top_left_corner.x, CV_32F);
   for (auto &stroke : strokes) {
-    cv::Point offset = stroke->GetPosition() - top_left_corner;
-    cv::Rect roi(offset, stroke->GetSize());
+    cv::Point offset = stroke.GetPosition() - top_left_corner;
+    cv::Rect roi(offset, stroke.GetSize());
     cv::Mat symbol_roi = symbol(roi);
-    cv::max(symbol_roi, stroke->GetMatrix(), symbol_roi);
+    cv::max(symbol_roi, stroke.GetMatrix(), symbol_roi);
   }
   return symbol;
 }
@@ -130,4 +130,20 @@ cv::Mat ResizeToMNISTFormat(const cv::Mat &input_mat) {
   cv::resize(input_mat, output_mat, cv::Size2i(28, 28), 0, 0, cv::INTER_CUBIC);
   return output_mat;
 }
+
+std::vector<mathboard::Stroke>
+FindIntersectingStrokes(const mathboard::Stroke &target_stroke,
+                        const std::vector<mathboard::Stroke> &strokes) {
+  std::vector<mathboard::Stroke> intersecting_strokes;
+  for (const auto &stroke : strokes) {
+    // checks if rectangles are intersecting
+    const cv::Rect2i &intersection =
+        target_stroke.GetBoundingBox() & stroke.GetBoundingBox();
+    if (intersection.area() != 0) {
+      intersecting_strokes.push_back(stroke);
+    }
+  }
+  return intersecting_strokes;
+}
+
 } // namespace mathboard

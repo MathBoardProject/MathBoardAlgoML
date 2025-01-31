@@ -28,7 +28,7 @@ Model::Model(const std::filesystem::path &model_filename) {
   }
   m_Interpreter->AllocateTensors();
 }
-uint32_t Model::Predict(cv::Mat input_mat) const {
+std::pair<float, int> Model::Predict(cv::Mat input_mat) const {
   if (input_mat.rows != 28 || input_mat.cols != 28) {
     spdlog::error("[Model::Predict]: Wrong matrix size");
   }
@@ -55,6 +55,6 @@ uint32_t Model::Predict(cv::Mat input_mat) const {
   tflite::label_image::get_top_n<float>(
       m_Interpreter->typed_output_tensor<float>(0), output_size, 1, treshold,
       &top_results, kTfLiteFloat32);
-  return top_results.front().second;
+  return top_results.front();
 }
 } // namespace mathboard
