@@ -5,30 +5,31 @@ mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
-print(type(x_train))
-model = tf.keras.models.Sequential([
-  tf.keras.layers.Flatten(input_shape=(28, 28)),
+
+
+CNNmodel = tf.keras.models.Sequential([
+  tf.keras.layers.Convolution2D(16, 4, activation="relu", 
+                                kernel_regularizer=tf.keras.regularizers.l2(),
+                                input_shape=(28, 28, 1)),
+  tf.keras.layers.MaxPool2D(),
+  tf.keras.layers.Convolution2D(32, 4, activation="relu"),
+  tf.keras.layers.Flatten(),
   tf.keras.layers.Dense(128, activation="relu"),
-  tf.keras.layers.Dropout(0.2),
-  tf.keras.layers.Dense(10),
+  tf.keras.layers.Dense(10, activation="softmax")
 ])
 
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 
-model.compile(optimizer='adam',
+CNNmodel.compile(optimizer='adam',
               loss=loss_fn,
               metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=10)
+CNNmodel.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
 
-conv = tf.lite.TFLiteConverter.from_keras_model(model) 
-tflite_model = conv.convert()
+converter = tf.lite.TFLiteConverter.from_keras_model(CNNmodel) 
+tflite_model = converter.convert()
 
 with open('models/converted_model.tflite', 'wb') as f:     
   f.write(tflite_model)
 
-probability_model = tf.keras.models.Sequential([
-  model, 
-  tf.keras.layers.Softmax()
-])
 
