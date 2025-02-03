@@ -130,11 +130,13 @@ void Daemon() {
             best_prediction.confidance = prediction.first;
             best_prediction.guessed_number = prediction.second;
             best_prediction.symbol_index = i;
+            highest_group_confidance = best_prediction.confidance;
           } else if (prediction.first > highest_single_confidance &&
                      highest_group_confidance == MIN_GROUP_CONFIDANCE) {
             best_prediction.confidance = prediction.first;
             best_prediction.guessed_number = prediction.second;
             best_prediction.symbol_index = i;
+            highest_single_confidance = best_prediction.confidance;
           }
         }
         // delete used strokes from remaining_strokes
