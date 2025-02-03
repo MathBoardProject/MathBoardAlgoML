@@ -22,8 +22,6 @@ public:
   // - It must be grayscaled
   // - It must be 28x28 in size
   // - It must have a data type of CV_32F
-  // If the matrix represents a digit that is too narrow, the prediction may be
-  // inaccurate.
   std::pair<float, int> Predict(cv::Mat input_mat) const;
 
 private:

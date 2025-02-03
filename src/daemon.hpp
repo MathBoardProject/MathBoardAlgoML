@@ -4,6 +4,7 @@
 #include "image_processing.hpp"
 #include "model.hpp"
 #include "opencv_helper.hpp"
+#include "prediction.hpp"
 #include "stroke.hpp"
 #include "unix_socket_server/unix_socket_server.hpp"
 
@@ -18,21 +19,10 @@
 #include <opencv2/opencv.hpp>
 
 // std
-#include <cstddef>
-#include <algorithm>
 #include <string>
-#include <iterator>
 #include <vector>
 
 namespace mathboard {
-
-struct Prediction {
-  Prediction(double confidance, int number, std::size_t symbol_index):
-    confidance(confidance), guessed_number(number), symbol_index(symbol_index) {}
-  double confidance{0.0};
-  int guessed_number{0};
-  std::size_t symbol_index;
-};
 
 /*
 FORMAT:
@@ -112,59 +102,50 @@ void Daemon() {
         strokeVector.emplace_back(strokeData["id"], strokeData["x"],
                                   strokeData["y"], processedImage);
       }
-      mathboard::Model model(
-      "/home/projects/MathBoardAlgoML/models/converted_model.tflite");
-  
-      std::vector<mathboard::Stroke> remaining_strokes = strokeVector;
-      std::vector<std::string> results;
+      Model model(
+          "/home/projects/MathBoardAlgoML/models/converted_model.tflite");
 
+      std::vector<Stroke> remaining_strokes = strokeVector;
+      std::vector<cv::Mat> results;
+
+      constexpr double MIN_GROUP_CONFIDANCE = 0.95;
       while (!remaining_strokes.empty()) {
-        spdlog::info("remaining_strokes[0] index {}",remaining_strokes[0].GetIndex());
-        std::vector<mathboard::Stroke> stroke_group =
-            mathboard::FindIntersectingStrokes(remaining_strokes[0],
-                                               remaining_strokes);
+        std::vector<Stroke> intersecting_strokes =
+            FindIntersectingStrokes(remaining_strokes[0], remaining_strokes);
 
-        const std::vector<std::vector<mathboard::Stroke>> combinations =
-            mathboard::GenerateCombinations(stroke_group);
-        std::vector<mathboard::Prediction> predictions;
-        // stroke combination index if the combination is bigger than one element and the model's confidence level is above 99%
-        std::size_t idx = combinations.size();
-        predictions.reserve(combinations.size());
-        // look for the best prediction in given combination
+        const std::vector<std::vector<Stroke>> combinations =
+            GenerateCombinations(intersecting_strokes);
+        Prediction best_prediction;
+        double highest_group_confidance = MIN_GROUP_CONFIDANCE;
+        double highest_single_confidance = 0.0;
+
+        // search for best prediction of symbol with remaining_strokes[0]
         for(std::size_t i = 0; i < combinations.size(); i++) {
-          const cv::Mat symbol = mathboard::CombineStrokes(combinations[i]);
-          const cv::Mat MNIST_symbol = mathboard::ResizeToMNISTFormat(symbol);
-          auto prediction = model.Predict(MNIST_symbol);
-          predictions.emplace_back(prediction.first, prediction.second, i);
-          // it is likely that this combination might be the right answear but it is temporary solution
-          if(combinations[i].size() > 1 && predictions.back().confidance > 0.99) {
-            idx = i;
+          const cv::Mat symbol = CombineStrokes(combinations[i]);
+          const cv::Mat MNIST_symbol = ResizeToMNISTFormat(symbol);
+          const auto prediction = model.Predict(MNIST_symbol);
+          // benefit the combinations containing multiple strokes
+          if (combinations[i].size() > 1 &&
+              prediction.first > highest_group_confidance) {
+            best_prediction.confidance = prediction.first;
+            best_prediction.guessed_number = prediction.second;
+            best_prediction.symbol_index = i;
+          } else if (prediction.first > highest_single_confidance &&
+                     highest_group_confidance == MIN_GROUP_CONFIDANCE) {
+            best_prediction.confidance = prediction.first;
+            best_prediction.guessed_number = prediction.second;
+            best_prediction.symbol_index = i;
           }
         }
-        std::size_t best_prediction_index = 0;
-        if(idx != combinations.size()) {
-          best_prediction_index = idx;
-        } else {
-          const auto best_prediction = std::max_element(
-            predictions.begin(), predictions.end(), [](const auto &a, const auto &b){
-              return a.confidance < b.confidance;
-            });
-          best_prediction_index = std::distance(predictions.begin(), best_prediction);
-        }
-
-        cv::Mat predicted_symbol = mathboard::CombineStrokes(combinations[best_prediction_index]);
-        cv::namedWindow("prediction", cv::WINDOW_AUTOSIZE);
-        cv::imshow("prediction", predicted_symbol);
-        cv::waitKey(0);
-        for (const auto &stroke : combinations[best_prediction_index]) {
+        // delete used strokes from remaining_strokes
+        for (const auto &stroke : combinations[best_prediction.symbol_index]) {
           remaining_strokes.erase(std::remove(remaining_strokes.begin(), remaining_strokes.end(), stroke));
         }
-        results.emplace_back(std::to_string(predictions[best_prediction_index].guessed_number));
+        cv::Mat best_prediction_matrix =
+            CombineStrokes(combinations[best_prediction.symbol_index]);
+        results.push_back(best_prediction_matrix);
       }
-      for(std::size_t i = 0; i < results.size(); i++) {
-        spdlog::info("{}. result: {}", i, results[i]);
-      }
-  }
+    }
   }
 }
 } // namespace mathboard
