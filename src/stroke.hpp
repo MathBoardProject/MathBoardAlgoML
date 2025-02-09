@@ -15,7 +15,7 @@ public:
          double scale_factor = 1.0 / 255.0);
   Stroke(int index, cv::Point2i position, cv::Mat grayscale_image,
          double scale_factor = 1.0 / 255.0);
-  bool operator==(const Stroke &other) {
+  bool operator==(const Stroke &other) const {
     return this->m_Index == other.m_Index;
   }
 

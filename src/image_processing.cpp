@@ -117,6 +117,9 @@ cv::Mat CombineStrokes(const std::vector<mathboard::Stroke> &strokes) {
       cv::Mat::zeros(bot_right_corner.y - top_left_corner.y,
                      bot_right_corner.x - top_left_corner.x, CV_32F);
   for (auto &stroke : strokes) {
+    if (stroke.GetMatrix().cols == 0 || stroke.GetMatrix().rows == 0) {
+      continue;
+    }
     cv::Point offset = stroke.GetPosition() - top_left_corner;
     cv::Rect roi(offset, stroke.GetSize());
     cv::Mat symbol_roi = symbol(roi);
