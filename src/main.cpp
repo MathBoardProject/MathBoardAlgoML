@@ -1,4 +1,4 @@
 // local
 #include "daemon.hpp"
 
-int main() { mathboard::Daemon(); }
+int main(int argc, char **argv) { mathboard::Daemon(); }

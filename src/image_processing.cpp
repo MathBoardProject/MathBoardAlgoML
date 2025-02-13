@@ -92,6 +92,10 @@ std::string RecognizeText(const cv::Mat &img) {
 }
 
 cv::Mat CombineStrokes(const std::vector<mathboard::Stroke> &strokes) {
+  if (strokes.empty()) {
+    spdlog::error("[CombineStrokes()]: strokes vector is empty");
+  }
+  // check if simple strokes.GetBoundingBox wouldn't work
   cv::Point2i top_left_corner = cv::Point2i(INT32_MAX, INT32_MAX);
   cv::Point2i bot_right_corner = cv::Point2i(INT32_MIN, INT32_MIN);
   for (const auto &stroke : strokes) {
