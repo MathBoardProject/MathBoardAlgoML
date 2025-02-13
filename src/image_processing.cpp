@@ -91,45 +91,35 @@ std::string RecognizeText(const cv::Mat &img) {
   return text;
 }
 
+// it won't work unless size of strokes overlap with pixels on img passed 
 cv::Mat CombineStrokes(const std::vector<mathboard::Stroke> &strokes) {
   if (strokes.empty()) {
     spdlog::error("[CombineStrokes()]: strokes vector is empty");
   }
-  // check if simple strokes.GetBoundingBox wouldn't work
-  cv::Point2i top_left_corner = cv::Point2i(INT32_MAX, INT32_MAX);
-  cv::Point2i bot_right_corner = cv::Point2i(INT32_MIN, INT32_MIN);
+  // Compute bounding box
+  cv::Rect combined_rect;
   for (const auto &stroke : strokes) {
-    const cv::Point2i stroke_top_left_corner = stroke.GetPosition();
-    const cv::Point2i stroke_bot_right_corner =
-        cv::Point2i(stroke.GetPosition().x + stroke.GetSize().width,
-                    stroke.GetPosition().y + stroke.GetSize().height);
+      combined_rect |= stroke.GetRect();
+  }
 
-    if (stroke_top_left_corner.x < top_left_corner.x) {
-      top_left_corner.x = stroke_top_left_corner.x;
+  // Create empty matrix
+  cv::Mat stroke_combination = cv::Mat::zeros(combined_rect.size(), CV_32F);
+  for (const auto &stroke : strokes) {
+    if (stroke.GetMatrix().empty()) {
+        continue;
     }
-    if (stroke_top_left_corner.y < top_left_corner.y) {
-      top_left_corner.y = stroke_top_left_corner.y;
-    }
-    if (stroke_bot_right_corner.x > bot_right_corner.x) {
-      bot_right_corner.x = stroke_bot_right_corner.x;
-    }
-    if (stroke_bot_right_corner.y > bot_right_corner.y) {
-      bot_right_corner.y = stroke_bot_right_corner.y;
-    }
-  }
-  cv::Mat symbol =
-      cv::Mat::zeros(bot_right_corner.y - top_left_corner.y,
-                     bot_right_corner.x - top_left_corner.x, CV_32F);
-  for (auto &stroke : strokes) {
-    if (stroke.GetMatrix().cols == 0 || stroke.GetMatrix().rows == 0) {
-      continue;
-    }
-    cv::Point offset = stroke.GetPosition() - top_left_corner;
+    cv::Point offset = stroke.GetPosition() - combined_rect.tl();
     cv::Rect roi(offset, stroke.GetSize());
-    cv::Mat symbol_roi = symbol(roi);
-    cv::max(symbol_roi, stroke.GetMatrix(), symbol_roi);
+  
+    // Ensure the region of interest is within bounds
+    if (roi.x >= 0 && roi.y >= 0 &&
+        roi.x + roi.width <= stroke_combination.cols &&
+        roi.y + roi.height <= stroke_combination.rows) {
+        cv::Mat stroke_combination_roi = stroke_combination(roi);
+        cv::max(stroke_combination_roi, stroke.GetMatrix(), stroke_combination_roi);
+    }
   }
-  return symbol;
+  return stroke_combination;
 }
 
 cv::Mat ResizeToMNISTFormat(const cv::Mat &input_mat) {
@@ -145,7 +135,7 @@ FindIntersectingStrokes(const mathboard::Stroke &target_stroke,
   for (const auto &stroke : strokes) {
     // checks if rectangles are intersecting
     const cv::Rect2i &intersection =
-        target_stroke.GetBoundingBox() & stroke.GetBoundingBox();
+        target_stroke.GetRect() & stroke.GetRect();
     if (intersection.area() != 0) {
       intersecting_strokes.push_back(stroke);
     }

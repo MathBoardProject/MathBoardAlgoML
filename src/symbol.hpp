@@ -32,7 +32,7 @@ public:
     }
     m_Matrix = CombineStrokes(strokes);
     for (const auto &stroke : strokes) {
-      m_Rect = m_Rect | stroke.GetBoundingBox();
+      m_Rect = m_Rect | stroke.GetRect();
     }
   }
   Symbol(std::size_t index, char label, double confidence)

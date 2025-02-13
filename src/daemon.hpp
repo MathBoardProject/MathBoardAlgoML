@@ -5,6 +5,7 @@
 #include "model.hpp"
 #include "opencv_helper.hpp"
 #include "symbol.hpp"
+#include "stroke.hpp"
 #include "symbol_processing.hpp"
 #include "unix_socket_server/unix_socket_server.hpp"
 

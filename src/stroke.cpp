@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 
 namespace mathboard {
-Stroke::Stroke(int index, int pos_x, int pos_y, cv::Mat grayscale_image,
+Stroke::Stroke(std::size_t index, float pos_x, float pos_y, cv::Mat grayscale_image,
                double scale_factor)
     : m_Index(index), m_Position(pos_x, pos_y) {
   if (grayscale_image.channels() != 1) {
@@ -14,7 +14,7 @@ Stroke::Stroke(int index, int pos_x, int pos_y, cv::Mat grayscale_image,
   }
   grayscale_image.convertTo(m_Matrix, CV_32F, scale_factor);
 }
-Stroke::Stroke(int index, cv::Point2i position, cv::Mat grayscale_image,
+Stroke::Stroke(std::size_t index, cv::Point2f position, cv::Mat grayscale_image,
                double scale_factor)
     : m_Index(index), m_Position(position) {
   if (grayscale_image.channels() != 1) {
