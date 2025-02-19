@@ -6,3 +6,4 @@ CMakeUserPresets.json
 /thirdparty/tensorflow/tensorflow_src
 .cache/
 .venv/
+models/*

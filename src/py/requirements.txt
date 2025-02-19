@@ -1,2 +1,2 @@
-tensorflow
-tensorflow-databases
+tensorflow[and-cuda]
+tensorflow-datasets
