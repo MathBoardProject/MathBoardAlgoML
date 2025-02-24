@@ -6,13 +6,17 @@ def normalize_img(image, label):
   return tf.cast(image, tf.float32) / 255., label
 
 # Load the EMNIST dataset
-(emnist_train, emnist_test), ds_info = tfds.load(
-  'emnist',
-  split=['train', 'test'],
-  shuffle_files=True,
-  as_supervised=True,
-  with_info=True,
+builder = tfds.builder('emnist')
+builder.info.set_file_format(file_format='tfrecord', override=True, override_if_initialized=True)
+builder.download_and_prepare()
+
+# Load the train and test datasets
+emnist_train, emnist_test = builder.as_dataset(
+    split=['train', 'test'],
+    shuffle_files=True,
+    as_supervised=True,
 )
+ds_info = builder.info
 
 # Normalize and prepare the training dataset
 emnist_train = emnist_train.map(normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
