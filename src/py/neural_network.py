@@ -6,7 +6,7 @@ def normalize_img(image, label):
   return tf.cast(image, tf.float32) / 255., label
 
 # Load the EMNIST dataset
-builder = tfds.builder('emnist')
+builder = tfds.builder('emnist/byclass')
 builder.info.set_file_format(file_format='tfrecord', override=True, override_if_initialized=True)
 builder.download_and_prepare()
 
