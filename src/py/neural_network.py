@@ -35,7 +35,7 @@ emnist_test = emnist_test.prefetch(tf.data.AUTOTUNE)
 model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(28, 28)),
   tf.keras.layers.Dense(128, activation='relu'),
-  tf.keras.layers.Dense(10)
+  tf.keras.layers.Dense(62)
 ])
 
 model.compile(
@@ -58,3 +58,4 @@ tflite_model = conv.convert()
 # Save the TFLite model
 with open('../../models/emnist.tflite', 'wb') as f:
   f.write(tflite_model)
+
