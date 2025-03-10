@@ -7,3 +7,4 @@ CMakeUserPresets.json
 .cache/
 .venv/
 models/*
+src/py/bhmsds/__pycache__
