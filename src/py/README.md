@@ -14,3 +14,5 @@
 * `cd ..`
 * `python3 neural_network.py`
 
+### Monitor Training with TensorBoard:
+* `open local http://localhost:6006 after running the scrpit`
