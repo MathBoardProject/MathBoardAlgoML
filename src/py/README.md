@@ -9,5 +9,8 @@
 * `pip install -r requirements.txt`
 
 ### Run:
-* `python neural_network.py`
+* `cd bhmsds`
+* `tfds build`
+* `cd ..`
+* `python3 neural_network.py`
 

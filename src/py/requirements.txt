@@ -1,2 +1,5 @@
 tensorflow[and-cuda]
 tensorflow-datasets
+kaggle
+tfds-nightly
+apache-beam
