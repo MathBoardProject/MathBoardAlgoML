@@ -54,8 +54,9 @@ model.compile(
     metrics=[tf.keras.metrics.SparseCategoricalAccuracy()],
 )
 
-# define the what info would be logged
-log_dir = "logs/fit" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+log_dir = os.path.join("logs", "fit", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+
+# Informations inside callback
 tensorboard_callback = tf.keras.callbacks.TensorBoard(
     log_dir=log_dir,
     histogram_freq=1,
