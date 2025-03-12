@@ -7,3 +7,6 @@ CMakeUserPresets.json
 .cache/
 .venv/
 models/*
+src/py/bhmsds/__pycache__
+src/py/venv
+src/py/logs
